@@ -1,10 +1,7 @@
 FROM openjdk:17-alpine
-WORKDIR /app
-COPY . .
-RUN apt-get update && apt-get install -y gradle
-RUN gradle clean build
-FROM openjdk:17-alpine
-WORKDIR /app
-COPY --from=build /app/build/libs/tooktook-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 9090
-CMD ["java", "-jar", "app.jar"]
+
+ARG JAR_FILE=/build/libs/tooktook-0.0.1-SNAPSHOT.jar
+
+COPY ${JAR_FILE} /tooktook.jar
+
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/tooktook.jar"]

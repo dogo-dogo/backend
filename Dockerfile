@@ -1,15 +1,10 @@
-FROM openjdk:17-alpine
-
-ENV APP_HOME=/usr/app/
-
-WORKDIR $APP_HOME
-ENV DATABASE_URL=jdbc:mariadb://mariadb:3306/groomthon
-
+FROM adoptopenjdk:17-jdk-hotspot as build
+WORKDIR /app
 COPY . .
-RUN gradle wrapper
-
-RUN ./gradlew clean build
-
-EXPOSE 8080
-
-CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/usr/app/build/libs/tooktook-0.0.1-SNAPSHOT.jar"]
+RUN apt-get update && apt-get install -y gradle
+RUN gradle clean build
+FROM adoptopenjdk:17-jre-hotspot
+WORKDIR /app
+COPY --from=build /app/build/libs/tooktook-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 9090
+CMD ["java", "-jar", "app.jar"]

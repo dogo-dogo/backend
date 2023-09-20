@@ -17,4 +17,8 @@ public class httpTestController {
     public ResponseEntity<String> getOnedocker(){
         return ResponseEntity.ok("docker");
     }
+    @GetMapping("/gitpush")
+    public ResponseEntity<String> gitpush(){
+        return ResponseEntity.ok("GIT PUSH DOCKER ");
+    }
 }

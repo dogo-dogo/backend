@@ -27,30 +27,7 @@ jobs:
       run: |
         cd ./src/main/resources
         touch ./application-prod.yml
-        #echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yml
-        run: |
-        cd ./src/main/resources
-        echo "server.shutdown = graceful\n\
-        server.port = 9090\n\
-        spring.mvc.pathmatch.matching-strategy=ant_path_matcher\n\
-        spring.datasource.driver-class-name= org.h2.Driver\n\
-        spring.datasource.url= jdbc:h2:~/holiday\n\
-        spring.datasource.username= sa\n\
-        spring.datasource.password= 1234\n\
-        spring.jpa.show-sql=true\n\
-        spring.jpa.hibernate.ddl-auto=create-drop\n\
-        spring.h2.console.enabled=true\n\
-        spring.h2.console.path=/h2-console\n\
-        spring.jpa.properties.hibernate.format_sql=true\n\
-        logging.level.org.hibernate.type.descriptor.sql=trace\n\
-        jwt.secret-key= Z29nby10bS1zZXJ2ZXItZGxyamVvYW9yb3JodG9kZ290c3Atam9vbmdhbmduaW0teWVvbHNpbWhpaGFsZ2VveW8K\n\
-        ACCESS_TOKEN_EXPIRE_TIME = 864000\n\
-        REFRESH_TOKEN_EXPIRE_TIME = 604800000\n\
-        oauth.kakao.url.auth = https://kauth.kakao.com\n\
-        oauth.kakao.url.api = https://kapi.kakao.com\n\
-        oauth.kakao.client-id = a153082dc35812389c5b9743c74f1c1b\n\
-        oauth.kakao.client-secret=1N8JcQUXHQA8QUNa6om2aTTL1Ix7ZfBl" > ./application-prod.yml
-            
+        echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yml
 
 
     - name: Grant execute permission for gradlew

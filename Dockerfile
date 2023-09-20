@@ -1,4 +1,4 @@
-FROM adoptopenjdk:17-jdk-hotspot as build
+FROM openjdk:17-alpine
 WORKDIR /app
 COPY . .
 RUN apt-get update && apt-get install -y gradle

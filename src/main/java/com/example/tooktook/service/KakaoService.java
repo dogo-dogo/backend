@@ -5,7 +5,7 @@ import com.example.tooktook.component.security.AuthTokens;
 import com.example.tooktook.component.security.AuthTokensGenerator;
 import com.example.tooktook.model.dto.MemberDto;
 import com.example.tooktook.model.entity.Member;
-import com.example.tooktook.model.repository.MemberRepository;
+import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KakaoService {
 
-    private final MemberRepository memberRepository;
+    private final MemberNeo4jRepository memberNeo4jRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 //    private final KakaoApiClient kakaoApiClient;
@@ -33,7 +33,7 @@ public class KakaoService {
 
     private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
 
-        return memberRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
+        return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
                 .map(Member::getMemberId)
                 .orElseGet(() -> newMember(oAuthInfoResponse));
     }
@@ -47,12 +47,12 @@ public class KakaoService {
                 .gender(oAuthInfoResponse.getGender())
                 .build();
 
-        return memberRepository.save(member).getMemberId();
+        return memberNeo4jRepository.save(member).getMemberId();
     }
 
     public MemberDto getMemberInfo(Long memberId) {
 
-        Member member = memberRepository.findByMemberId(memberId).get();
+        Member member = memberNeo4jRepository.findByMemberId(memberId).get();
         return MemberDto.from(member);
     }
 

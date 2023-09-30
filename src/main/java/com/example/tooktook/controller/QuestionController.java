@@ -24,7 +24,7 @@ public class QuestionController {
     @PostMapping("/default")
     public ResponseEntity<Member> getMemberId(
             @LoginMember CurrentMember loginMember,
-            Neo4Dto neo4Dto) {
+            @RequestBody Neo4Dto neo4Dto) {
         return ResponseEntity.ok(neo4jService.createMemberWithDefault(loginMember.getMemberId(),neo4Dto));
     }
 

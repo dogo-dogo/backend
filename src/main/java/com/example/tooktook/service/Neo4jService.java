@@ -30,7 +30,7 @@ public class Neo4jService {
     public Member createMemberWithDefault(Long memberId ,Neo4Dto neo4Dto) {
         Member member = memberNeo4jRepository.findByMemberId(memberId)
                 .orElse(null);
-        if(member == null) { // 회원이 존재 하지 않는다면 새로운 회원의 정보를 생성
+        if(!member.getVisit()) { // 회원이 존재 하지 않는다면 새로운 회원의 정보를 생성
 
             List<Question> questions = Arrays.stream(QuestionEnum.values())
                     .map(questionEnum -> {
@@ -41,10 +41,8 @@ public class Neo4jService {
                     .peek(questionNeo4jRepository::save)
                     .collect(Collectors.toList());
 
-            member.setColor(neo4Dto.getColor());
-            member.setSize(neo4Dto.getSize());
-            member.setNickname(neo4Dto.getNickName());
-
+            member.update(neo4Dto);
+            member.changeVisit();
 
             for (Question question : questions) {
                 member.askQuestion(question);
@@ -53,9 +51,7 @@ public class Neo4jService {
             memberNeo4jRepository.save(member);
         }
         else{
-            member.setColor(neo4Dto.getColor());
-            member.setSize(neo4Dto.getSize());
-            member.setNickname(neo4Dto.getNickName());
+            member.update(neo4Dto);
             memberNeo4jRepository.save(member);
         }
         return member;

@@ -45,6 +45,7 @@ public class KakaoService {
                 .loginEmail(oAuthInfoResponse.getEmail())
                 .nickname(oAuthInfoResponse.getNickName())
                 .gender(oAuthInfoResponse.getGender())
+                .visit(Boolean.FALSE)
                 .build();
 
         return memberNeo4jRepository.save(member).getMemberId();

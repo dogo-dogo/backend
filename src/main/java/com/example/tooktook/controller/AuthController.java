@@ -37,11 +37,28 @@ public class AuthController {
         return ResponseEntity.ok(code);
     }
 
-    @GetMapping("/{accessToken}") // 엑세스 토큰 확인용
-    public ResponseEntity<MemberDto> findByAccessToken(@PathVariable String accessToken) {
+//    @GetMapping("/{accessToken}") // 엑세스 토큰 확인용
+//    public ResponseEntity<MemberDto> findByAccessToken(@PathVariable String accessToken) {
+//
+//        Long memberId = authTokensGenerator.extractMemberId(accessToken);
+//
+//        return ResponseEntity.ok(kakaoService.getMemberInfo(memberId));
+//    }
 
-        Long memberId = authTokensGenerator.extractMemberId(accessToken);
+    @GetMapping("/check-access-token")
+    public ResponseEntity<MemberDto> findByAccessToken(@RequestHeader("Authorization") String accessToken) {
+
+        String actualAccessToken = extractAccessToken(accessToken);
+
+        Long memberId = authTokensGenerator.extractMemberId(actualAccessToken);
 
         return ResponseEntity.ok(kakaoService.getMemberInfo(memberId));
+    }
+
+    private String extractAccessToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
     }
 }

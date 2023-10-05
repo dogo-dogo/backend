@@ -54,6 +54,7 @@ public class Member extends BaseTimeEntity{
     @Relationship(type = "ASKS")
     private List<Question> questions = new ArrayList<>();
 
+
     public void askQuestion(Question question) {
         questions.add(question);
     }

@@ -44,6 +44,7 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
+
         } catch (SignatureException ex) {
             throw new JwtException("invalid token request exception - Incorrect signature");
         } catch (MalformedJwtException ex) {

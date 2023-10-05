@@ -6,9 +6,8 @@ import lombok.*;
 import javax.persistence.Column;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class MemberDto {
     private Long memberId;

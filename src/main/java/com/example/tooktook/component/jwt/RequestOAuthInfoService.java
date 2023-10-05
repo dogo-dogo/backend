@@ -34,10 +34,9 @@ public class RequestOAuthInfoService {
         return client.requestOauthInfo(accessToken);
     }
 
-
-    public String getAccessToken(OAuthLoginParams accessCode) {
-
-        OAuthApiClient client = clients.get(accessCode.oAuthProvider());
-        return client.requestAccessToken(accessCode);
-    }
+//    public String getAccessToken(OAuthLoginParams accessCode) {
+//
+//        OAuthApiClient client = clients.get(accessCode.oAuthProvider());
+//        return client.requestAccessToken(accessCode);
+//    }
 }

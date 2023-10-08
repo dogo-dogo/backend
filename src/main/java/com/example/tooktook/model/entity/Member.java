@@ -59,4 +59,7 @@ public class Member extends BaseTimeEntity{
         questions.add(question);
     }
 
+    public void chgupdate(String nickname) {
+        this.nickname = nickname;
+    }
 }

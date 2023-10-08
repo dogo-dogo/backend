@@ -5,7 +5,7 @@ import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.Neo4Dto;
 import com.example.tooktook.model.dto.QuestionDTO;
-import com.example.tooktook.model.dto.QuestionEnum;
+import com.example.tooktook.model.enumDto.Bye2023Enum;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Question;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +31,10 @@ public class Neo4jService {
                 .orElse(null);
         if(!member.getVisit()) { // 회원이 존재 하지 않는다면 새로운 회원의 정보를 생성
 
-            List<Question> questions = Arrays.stream(QuestionEnum.values())
-                    .map(questionEnum -> {
+            List<Question> questions = Arrays.stream(Bye2023Enum.values())
+                    .map(bye2023Enum -> {
                         Question question = new Question();
-                        question.setText(questionEnum.getText());
+                        question.setText(bye2023Enum.getText());
                         return question;
                     })
                     .peek(questionNeo4jRepository::save)
@@ -79,4 +78,5 @@ public class Neo4jService {
     public List<QuestionDTO> findMemberIdToQuestionId(CurrentMember loginMember) {
         return memberNeo4jRepository.findQuestionsByMemberId(loginMember.getMemberId());
     }
+
 }

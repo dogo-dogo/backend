@@ -1,6 +1,6 @@
 package com.example.tooktook.model.enumDto;
 
-public enum complimentEnum {
+public enum Compliment {
 
     QUESTION_1("올해 %s에게 해줄 칭찬을 말해줘!"),
     QUESTION_2("당신이 지켜주고 싶은 %s만의 올해 매력은 뭐야?"),
@@ -8,7 +8,7 @@ public enum complimentEnum {
     ;
     private final String text;
 
-    complimentEnum(String text) {
+    Compliment(String text) {
         this.text = text;
     }
 

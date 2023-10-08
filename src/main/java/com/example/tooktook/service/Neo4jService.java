@@ -3,12 +3,12 @@ package com.example.tooktook.service;
 import com.example.tooktook.component.security.CurrentMember;
 import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.Neo4Dto;
 import com.example.tooktook.model.dto.QuestionDTO;
-import com.example.tooktook.model.enumDto.Bye2023Enum;
+import com.example.tooktook.model.entity.Category;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Question;
+import com.example.tooktook.model.enumDto.*;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.model.repository.QuestionNeo4jRepository;
@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,34 +25,53 @@ public class Neo4jService {
     private final QuestionNeo4jRepository questionNeo4jRepository;
 
     private final AnswerNeo4jRepository answerNeo4jRepository;
-    public Member createMemberWithDefault(Long memberId ,Neo4Dto neo4Dto) {
+    public Member createMemberWithDefault(Long memberId) {
+
         Member member = memberNeo4jRepository.findByMemberId(memberId)
-                .orElse(null);
-        if(!member.getVisit()) { // 회원이 존재 하지 않는다면 새로운 회원의 정보를 생성
+                .orElseThrow( () -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID));
 
-            List<Question> questions = Arrays.stream(Bye2023Enum.values())
-                    .map(bye2023Enum -> {
-                        Question question = new Question();
-                        question.setText(bye2023Enum.getText());
-                        return question;
-                    })
-                    .peek(questionNeo4jRepository::save)
-                    .collect(Collectors.toList());
+        String memberNickName = member.getNickname();
 
-            member.update(neo4Dto);
-            member.changeVisit();
+        if (!member.getVisit()) {
 
-            for (Question question : questions) {
-                member.askQuestion(question);
+            for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+                Category category = new Category(categoryEnum.getText());
+                member.addCategory(category);
+
+                switch (categoryEnum.getText()){
+                    case "BYE2023":
+                        Arrays.stream(Bye2023.values())
+                                .map(bye2023Enum -> new Question(String.format(bye2023Enum.getText(), memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "COMPLIMENT":
+                        Arrays.stream(Compliment.values())
+                                .map(complimentEnum -> new Question(String.format(complimentEnum.getText(), memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "FI":
+                        Arrays.stream(Fi.values())
+                                .map(fiEnum -> new Question(String.format(fiEnum.getText(),memberNickName,memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "GROWTH":
+                        Arrays.stream(Growth.values())
+                                .map(growthEnum -> new Question(String.format(growthEnum.getText(),memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "HELLO2024":
+                        Arrays.stream(Hello2024.values())
+                                .map(hello2024Enum -> new Question(String.format(hello2024Enum.getText(),memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                }
+
             }
-
-            memberNeo4jRepository.save(member);
-        }
-        else{
-            member.update(neo4Dto);
+            member.changeVisit();
             memberNeo4jRepository.save(member);
         }
         return member;
+
     }
 
     public String addAnswerToQuestion(Long questionId, String answerText) {

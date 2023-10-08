@@ -23,14 +23,8 @@ public class QuestionController {
 
     @PostMapping("/default")
     public ResponseEntity<Member> getMemberId(
-            @LoginMember CurrentMember loginMember,
-            @RequestBody Neo4Dto neo4Dto) {
-        return ResponseEntity.ok(neo4jService.createMemberWithDefault(loginMember.getMemberId(),neo4Dto));
-    }
-    @PostMapping("/nickname")
-    public void changeNickName(@LoginMember CurrentMember loginMember,
-                               @RequestParam String nickname){
-        neo4jService.changeNickName(loginMember.getMemberId(), nickname);
+             Long loginMember) {
+        return ResponseEntity.ok(neo4jService.createMemberWithDefault(loginMember));
     }
 
     @PostMapping("/{questionId}/answers")

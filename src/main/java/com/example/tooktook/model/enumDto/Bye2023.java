@@ -1,6 +1,6 @@
 package com.example.tooktook.model.enumDto;
 
-public enum Bye2023Enum {
+public enum Bye2023 {
     QUESTION_1("2023년의 %s를 7글자로 표현해줘"),
     QUESTION_2("올해가 가기 전 마지막으로 %s에게 듣고 싶은 말을 알려줘!"),
     QUESTION_3("올해 가장 %s와 함께 기뻐했던 순간은 언제야?"),
@@ -11,11 +11,13 @@ public enum Bye2023Enum {
 
     private final String text;
 
-    Bye2023Enum(String text) {
+    Bye2023(String text) {
         this.text = text;
     }
 
     public String getText() {
         return text;
     }
+
+
 }

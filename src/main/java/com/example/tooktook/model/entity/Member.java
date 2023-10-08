@@ -29,7 +29,7 @@ public class Member extends BaseTimeEntity{
     @Column(columnDefinition = "NVARCHAR(20)")
     private String color;
     @Column(columnDefinition = "NVARCHAR(255)")
-    private String size;
+    private String decorate;
 
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
@@ -42,24 +42,16 @@ public class Member extends BaseTimeEntity{
         this.visit = visit;
     }
 
-    public void update(Neo4Dto neo4Dto){
-        this.color = neo4Dto.getColor();
-        this.size = neo4Dto.getSize();
-        this.nickname = neo4Dto.getNickName();
-    }
     public void changeVisit(){
         this.visit = Boolean.TRUE;
     }
 
-    @Relationship(type = "ASKS")
-    private List<Question> questions = new ArrayList<>();
+    @Relationship(type = "CATEGORY")
+    private List<Category> categories = new ArrayList<>();
 
 
-    public void askQuestion(Question question) {
-        questions.add(question);
+    public void addCategory(Category category) {
+        categories.add(category);
     }
 
-    public void chgupdate(String nickname) {
-        this.nickname = nickname;
-    }
 }

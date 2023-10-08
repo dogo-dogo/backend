@@ -1,6 +1,6 @@
 package com.example.tooktook.model.enumDto;
 
-public enum fiEnum {
+public enum Fi {
     QUESTION_1("%s를 너 친구들 한테 소개 하면 뭐라고 소개 할꺼야?"),
     QUESTION_2("%s를 너 회사 사람들 한테 소개 하면 뭐라고 소개 할꺼야?"),
     QUESTION_3("만약에 우리가 아이돌이 되었어. %s는 어떤 포지션이 어울려? 너도 궁금하다!"),
@@ -10,7 +10,7 @@ public enum fiEnum {
     ;
     private final String text;
 
-    fiEnum(String text) {this.text = text;}
+    Fi(String text) {this.text = text;}
 
-    private String getText() {return text;}
+    public String getText() {return text;}
 }

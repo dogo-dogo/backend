@@ -17,7 +17,8 @@ public enum ErrorCode {
     NOT_CHANGED_PASSWORD("기존의 패스워드 입니다."),
     ALREADY_DELETED_MEMBER("이미 탈퇴한 회원입니다."),
 
-
+    //질문
+    NOT_FIND_QUESTION_ID("질문이 존재 하지 않습니다"),
     // 카카오API
     WRONG_ACCESS_TOKEN_AUTH("잘못된 인증입니다."),
     EMPTY_ACCESS_TOKEN("토큰이 비었습니다."),

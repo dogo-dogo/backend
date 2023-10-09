@@ -13,8 +13,7 @@ import java.util.Optional;
 public interface MemberNeo4jRepository extends Neo4jRepository<Member, Long> {
     Optional<Member> findByLoginEmail(String email);
     Optional<Member> findByMemberId(Long memberId);
-    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category) WHERE id(m) =$memberId RETURN id(c) as categoryId, c.text as categoryName")
-    List<CategoryDto> findQuestionsByMemberId(@Param("memberId") Long memberId);
+
 
 //  답변을 가지고 있는 질문들을 추출하는 JPA
 //    @Query("MATCH (m:Member)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +

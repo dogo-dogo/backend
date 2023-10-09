@@ -1,9 +1,8 @@
 package com.example.tooktook.service;
 
-import com.example.tooktook.component.security.CurrentMember;
 import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.QuestionDTO;
+import com.example.tooktook.model.dto.CategoryDto;
 import com.example.tooktook.model.entity.Category;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
@@ -14,6 +13,7 @@ import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.model.repository.QuestionNeo4jRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -25,6 +25,8 @@ public class Neo4jService {
     private final QuestionNeo4jRepository questionNeo4jRepository;
 
     private final AnswerNeo4jRepository answerNeo4jRepository;
+
+    @Transactional
     public Member createMemberWithDefault(Long memberId) {
 
         Member member = memberNeo4jRepository.findByMemberId(memberId)
@@ -74,6 +76,7 @@ public class Neo4jService {
 
     }
 
+    @Transactional
     public String addAnswerToQuestion(Long questionId, String answerText) {
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
         if (questionOptional.isPresent()) {
@@ -93,8 +96,8 @@ public class Neo4jService {
         }
     }
 
-    public List<QuestionDTO> findMemberIdToQuestionId(CurrentMember loginMember) {
-        return memberNeo4jRepository.findQuestionsByMemberId(loginMember.getMemberId());
+    public List<CategoryDto> findMemberIdToQuestionId(Long loginMember) {
+        return memberNeo4jRepository.findQuestionsByMemberId(loginMember);
     }
 
 }

@@ -19,6 +19,9 @@ public enum ErrorCode {
 
     //질문
     NOT_FIND_QUESTION_ID("질문이 존재 하지 않습니다"),
+
+    //답변
+    NOT_FIND_ANSWER_ID("답변이 존재 하지 않습니다"),
     // 카카오API
     WRONG_ACCESS_TOKEN_AUTH("잘못된 인증입니다."),
     EMPTY_ACCESS_TOKEN("토큰이 비었습니다."),

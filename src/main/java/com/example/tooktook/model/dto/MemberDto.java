@@ -3,7 +3,6 @@ package com.example.tooktook.model.dto;
 import com.example.tooktook.model.entity.Member;
 import lombok.*;
 
-import javax.persistence.Column;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,7 +14,7 @@ public class MemberDto {
     private String nickname;
     private String gender;
     private String color;
-    private String size;
+    private String decorate;
     public static MemberDto from(Member member) {
         return MemberDto.builder()
                 .memberId(member.getMemberId())
@@ -23,7 +22,7 @@ public class MemberDto {
                 .gender(member.getGender())
                 .loginEmail(member.getLoginEmail())
                 .color(member.getColor())
-                .size(member.getSize())
+                .decorate(member.getDecorate())
                 .build();
     }
 }

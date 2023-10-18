@@ -1,18 +1,15 @@
 package com.example.tooktook.controller;
 
-import com.example.tooktook.component.security.CurrentMember;
-import com.example.tooktook.component.security.LoginMember;
-import com.example.tooktook.model.dto.Neo4Dto;
-import com.example.tooktook.model.dto.QuestionDTO;
+import com.example.tooktook.model.dto.CategoryDto;
+import com.example.tooktook.model.dto.CategoryListDto;
+import com.example.tooktook.model.dto.QuestionDto;
 import com.example.tooktook.model.entity.Member;
-import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.service.Neo4jService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ques")
@@ -21,20 +18,22 @@ public class QuestionController {
 
     private final Neo4jService neo4jService;
 
-    @PostMapping("/default")
+    @PostMapping("/default/{loginMember}")
     public ResponseEntity<Member> getMemberId(
-            @LoginMember CurrentMember loginMember,
-            @RequestBody Neo4Dto neo4Dto) {
-        return ResponseEntity.ok(neo4jService.createMemberWithDefault(loginMember.getMemberId(),neo4Dto));
+              @PathVariable("loginMember") Long loginMember) {
+        return ResponseEntity.ok(neo4jService.createMemberWithDefault(loginMember));
     }
 
     @PostMapping("/{questionId}/answers")
-    public ResponseEntity<String> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody String answerText) {
-
-        return ResponseEntity.ok(neo4jService.addAnswerToQuestion(questionId,answerText));
+    public void addAnswerToQuestion(@PathVariable Long questionId, @RequestBody String answerText) {
+        neo4jService.addAnswerToQuestion(questionId,answerText);
     }
-    @GetMapping("/find")
-    public ResponseEntity<List<QuestionDTO>> getMemberIdToAllQuestionId(@LoginMember CurrentMember loginMember){
-        return ResponseEntity.ok(neo4jService.findMemberIdToQuestionId(loginMember));
+    @GetMapping("/find/category/{loginMember}")
+    public ResponseEntity<List<CategoryListDto>> getMemberIdToCategoryAllCount(@PathVariable("loginMember") Long loginMember){
+        return ResponseEntity.ok(neo4jService.getAllCategoryCount(loginMember));
+    }
+    @GetMapping("/find/question/{loginMember}")
+    public ResponseEntity<List<QuestionDto>> getCategoryToQuestion(@PathVariable("loginMember") Long loginMember, @RequestParam Long cid){
+        return ResponseEntity.ok(neo4jService.getCategoryToQuestion(loginMember,cid));
     }
 }

@@ -1,10 +1,7 @@
 package com.example.tooktook.model.entity;
 
 import lombok.*;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.data.neo4j.core.schema.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
 @Node
 @Getter
 @Setter
+
 public class Question {
     @Id
     @GeneratedValue
@@ -19,10 +17,15 @@ public class Question {
     private String text;
     private List<Long> answerIds;
 
+    @Property("question")
+    private String question;
     @Relationship(type = "HAS_ANSWER")
     private List<Answer> answers = new ArrayList<>();
 
     public void askAnswer(Answer answer) {
         answers.add(answer);
+    }
+    public Question(String question){
+        this.text = question;
     }
 }

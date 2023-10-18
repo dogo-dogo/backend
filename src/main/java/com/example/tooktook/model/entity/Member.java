@@ -1,6 +1,5 @@
 package com.example.tooktook.model.entity;
 
-import com.example.tooktook.model.dto.Neo4Dto;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;

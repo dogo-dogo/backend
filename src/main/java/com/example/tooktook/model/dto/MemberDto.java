@@ -23,7 +23,7 @@ public class MemberDto {
                 .gender(member.getGender())
                 .loginEmail(member.getLoginEmail())
                 .color(member.getColor())
-                .size(member.getSize())
+                .size(member.getDecorate())
                 .build();
     }
 }

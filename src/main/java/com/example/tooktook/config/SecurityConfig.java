@@ -41,13 +41,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 허용할 URL
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 
         configuration.setAllowedMethods(
-            Arrays.asList("OPTIONS", "HEAD", "GET", "POST", "PUT", "PATCH", "DELETE")); // 허용할 메서드
+            Arrays.asList("OPTIONS", "HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"));
 
         configuration.setAllowedHeaders(
-            Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Set-Cookie")); // 허용할 Header
+            Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Set-Cookie"));
 
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

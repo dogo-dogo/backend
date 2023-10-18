@@ -1,5 +1,6 @@
 package com.example.tooktook.controller;
 
+import com.example.tooktook.model.dto.AnswerDto;
 import com.example.tooktook.model.dto.CategoryDto;
 import com.example.tooktook.model.dto.CategoryListDto;
 import com.example.tooktook.model.dto.QuestionDto;
@@ -25,8 +26,8 @@ public class QuestionController {
     }
 
     @PostMapping("/{questionId}/answers")
-    public void addAnswerToQuestion(@PathVariable Long questionId, @RequestBody String answerText) {
-        neo4jService.addAnswerToQuestion(questionId,answerText);
+    public void addAnswerToQuestion(@PathVariable Long questionId, @RequestBody AnswerDto answerdto) {
+        neo4jService.addAnswerToQuestion(questionId,answerdto);
     }
     @GetMapping("/find/category/{loginMember}")
     public ResponseEntity<List<CategoryListDto>> getMemberIdToCategoryAllCount(@PathVariable("loginMember") Long loginMember){
@@ -35,5 +36,9 @@ public class QuestionController {
     @GetMapping("/find/question/{loginMember}")
     public ResponseEntity<List<QuestionDto>> getCategoryToQuestion(@PathVariable("loginMember") Long loginMember, @RequestParam Long cid){
         return ResponseEntity.ok(neo4jService.getCategoryToQuestion(loginMember,cid));
+    }
+    @DeleteMapping("/delete/answer/{loginMember}")
+    public void deleteToAnswerId(@PathVariable("loginMember") Long loginMember, @RequestParam Long answerId){
+        neo4jService.deleteToAnswerId(loginMember,answerId);
     }
 }

@@ -12,5 +12,6 @@ public class Answer {
     @Id
     @GeneratedValue
     private Long answerId;
-    private String text;
+    private String mainText;
+    private String optionalText;
 }

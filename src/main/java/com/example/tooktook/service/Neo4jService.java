@@ -2,7 +2,7 @@ package com.example.tooktook.service;
 
 import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.CategoryDto;
+import com.example.tooktook.model.dto.AnswerDto;
 import com.example.tooktook.model.dto.CategoryListDto;
 import com.example.tooktook.model.dto.QuestionDto;
 import com.example.tooktook.model.entity.Category;
@@ -81,13 +81,14 @@ public class Neo4jService {
     }
 
     @Transactional
-    public void addAnswerToQuestion(Long questionId, String answerText) {
+    public void addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
 
         if (questionOptional.isPresent()) {
             Question question = questionOptional.get();
             Answer answer = new Answer();
-            answer.setText(answerText);
+            answer.setMainText(answerDto.getMainText());
+            answer.setOptionalText(answer.getOptionalText());
 
             // 질문과 답변을 연결
             question.askAnswer(answer);
@@ -124,7 +125,19 @@ public class Neo4jService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID))
                 .getMemberId();
 
-        return questionNeo4jRepository.findCategoryIdToQuestion(loginMember,cid);
+        return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
 
+    }
+
+    @Transactional
+    public void deleteToAnswerId(Long loginMember, Long answerId) {
+        Long memberId = memberNeo4jRepository.findByMemberId(loginMember)
+                .orElseThrow(() -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID))
+                .getMemberId();
+
+        Answer answer = answerNeo4jRepository.findById(answerId)
+                .orElseThrow(()->new GlobalException(ErrorCode.NOT_FIND_ANSWER_ID));
+
+        answerNeo4jRepository.delete(answer);
     }
 }

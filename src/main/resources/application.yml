@@ -1,0 +1,12 @@
+cloud:
+  aws:
+    s3:
+      bucket: dogo-dogo
+    credentials:
+      access-key: AKIAWEE5LPUIOVW3MKAI
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

@@ -5,6 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FileDto {
+public class ImageFileDto {
+    private String doorColor;
+    private String decoration;
 
 }

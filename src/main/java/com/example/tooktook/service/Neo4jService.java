@@ -82,6 +82,8 @@ public class Neo4jService {
 
     @Transactional
     public void addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
+
+        // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
 
         if (questionOptional.isPresent()) {

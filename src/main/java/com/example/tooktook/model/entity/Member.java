@@ -10,7 +10,6 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 @Node
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

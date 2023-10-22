@@ -9,11 +9,15 @@ import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
 public class KakaoService {
 
     private final MemberNeo4jRepository memberNeo4jRepository;
@@ -26,20 +30,23 @@ public class KakaoService {
 
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(kakaoAccessCode);
         Long memberId = findOrCreateMember(oAuthInfoResponse);
+        log.info("login memberId (login)  :: " + memberId);
 
         return authTokensGenerator.generate(memberId);
     }
 
 
-    private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
+    @Transactional
+    public Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
 
+        log.error("findOrCreateMember :: " + oAuthInfoResponse.getEmail());
         return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
                 .map(Member::getMemberId)
                 .orElseGet(() -> newMember(oAuthInfoResponse));
     }
 
-
-    private Long newMember(OAuthInfoResponse oAuthInfoResponse) {
+    @Transactional
+    public Long newMember(OAuthInfoResponse oAuthInfoResponse) {
 
         Member member = Member.builder()
                 .loginEmail(oAuthInfoResponse.getEmail())
@@ -47,8 +54,10 @@ public class KakaoService {
                 .gender(oAuthInfoResponse.getGender())
                 .visit(Boolean.FALSE)
                 .build();
+        log.error("newMember :: " + member.getMemberId());
+        memberNeo4jRepository.save(member);
 
-        return memberNeo4jRepository.save(member).getMemberId();
+        return member.getMemberId();
     }
 
     public MemberDto getMemberInfo(Long memberId) {

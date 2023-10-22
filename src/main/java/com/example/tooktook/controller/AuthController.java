@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final KakaoService kakaoService;
-
     private final AuthTokensGenerator authTokensGenerator;
     @PostMapping("/auth/kakao")
     public ResponseEntity<AuthTokens> loginKakao(@RequestBody KakaoLoginParams kakaoAccessCode) {

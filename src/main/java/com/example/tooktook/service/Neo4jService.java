@@ -1,15 +1,17 @@
 package com.example.tooktook.service;
 
+import com.example.tooktook.common.response.ApiResponse;
+import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.AnswerDto;
 import com.example.tooktook.model.dto.CategoryListDto;
 import com.example.tooktook.model.dto.QuestionDto;
+import com.example.tooktook.model.dto.enumDto.*;
 import com.example.tooktook.model.entity.Category;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Question;
-import com.example.tooktook.model.enumDto.*;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
 import com.example.tooktook.model.repository.CategoryNeo4jRepository;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
@@ -22,6 +24,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class Neo4jService {
     private final MemberNeo4jRepository memberNeo4jRepository;
 
@@ -31,10 +34,10 @@ public class Neo4jService {
     private final AnswerNeo4jRepository answerNeo4jRepository;
 
     @Transactional
-    public Member createMemberWithDefault(Long memberId) {
+    public Member createMemberWithDefault(String memberEmail) {
 
-        Member member = memberNeo4jRepository.findByMemberId(memberId)
-                .orElseThrow( () -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID));
+        Member member = memberNeo4jRepository.findByLoginEmail(memberEmail)
+                .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
         String memberNickName = member.getNickname();
 
@@ -90,7 +93,7 @@ public class Neo4jService {
             Question question = questionOptional.get();
             Answer answer = new Answer();
             answer.setMainText(answerDto.getMainText());
-            answer.setOptionalText(answer.getOptionalText());
+            answer.setOptionalText(answerDto.getOptionalText());
 
             // 질문과 답변을 연결
             question.askAnswer(answer);
@@ -100,14 +103,14 @@ public class Neo4jService {
 
 //            return "답변이 추가되었습니다.";
         } else {
-            throw new GlobalException(ErrorCode.NOT_FIND_QUESTION_ID);
+            throw new GlobalException(ResponseCode.ErrorCode.NOT_FIND_QUESTION_ID);
         }
     }
 
-    public List<CategoryListDto> getAllCategoryCount(Long loginMember) {
+    public List<CategoryListDto> getAllCategoryCount(String loginMember) {
 
-        Long memberId = memberNeo4jRepository.findByMemberId(loginMember)
-                .orElseThrow(() -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID))
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
 
@@ -122,9 +125,9 @@ public class Neo4jService {
         return categoryListDtoList;
     }
 
-    public List<QuestionDto> getCategoryToQuestion(Long loginMember, Long cid) {
-        Long memberId = memberNeo4jRepository.findByMemberId(loginMember)
-                .orElseThrow(() -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID))
+    public List<QuestionDto> getCategoryToQuestion(String loginMember, Long cid) {
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
         return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
@@ -132,13 +135,13 @@ public class Neo4jService {
     }
 
     @Transactional
-    public void deleteToAnswerId(Long loginMember, Long answerId) {
-        Long memberId = memberNeo4jRepository.findByMemberId(loginMember)
-                .orElseThrow(() -> new GlobalException(ErrorCode.NOT_FIND_MEMBER_ID))
+    public void deleteToAnswerId(String loginMember, Long answerId) {
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
         Answer answer = answerNeo4jRepository.findById(answerId)
-                .orElseThrow(()->new GlobalException(ErrorCode.NOT_FIND_ANSWER_ID));
+                .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
 
         answerNeo4jRepository.delete(answer);
     }

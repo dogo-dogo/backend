@@ -1,5 +1,6 @@
 package com.example.tooktook.model.entity;
 
+import com.example.tooktook.model.dto.enumDto.MemberRole;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -32,12 +33,16 @@ public class Member extends BaseTimeEntity{
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
 
+    @Enumerated(EnumType.STRING)
+    private MemberRole role;
+
     @Builder
-    public Member (String loginEmail, String nickname, String gender,Boolean visit){
+    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
         this.gender = gender;
         this.visit = visit;
+        this.role = role;
     }
 
     public void changeVisit(){

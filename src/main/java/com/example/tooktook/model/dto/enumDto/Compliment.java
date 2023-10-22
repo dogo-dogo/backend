@@ -1,4 +1,4 @@
-package com.example.tooktook.model.enumDto;
+package com.example.tooktook.model.dto.enumDto;
 
 public enum Compliment {
 

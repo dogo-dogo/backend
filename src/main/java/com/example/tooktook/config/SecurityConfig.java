@@ -25,22 +25,6 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private static final String[] PERMIT_URL_ARRAY = {
-            /* swagger v2 */
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            /* swagger v3 */
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/api/kakao/**",
-            "/"
-    };
     private final KakaoService kakaoService;
     private final JwtTokenProvider jwtTokenProvider;
     @Override
@@ -55,36 +39,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider,kakaoService), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
-                    .antMatchers(PERMIT_URL_ARRAY).permitAll()
+                    .antMatchers("/api/auth/**","/","/api/kakao/**","/api/ques/**").permitAll()
                     .antMatchers("/api/**").authenticated()
                     .anyRequest().authenticated()
                 .and().formLogin().disable()
                 .httpBasic().disable();
     }
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
-//        http.headers()
-//            .frameOptions()
-//            .sameOrigin().and()
-//            .csrf().disable()
-//                .authorizeRequests((authorizeRequests)
-//                        -> authorizeRequests
-//                        .antMatchers("/","/api/kakao/**","/api/auth/**","/api/member/checkTest").permitAll()
-//                        .antMatchers(PERMIT_URL_ARRAY).permitAll()
-//                        .antMatchers("/api/**").authenticated())
-//
-//            .cors().configurationSource(corsConfigurationSource())
-//            .and()
-//            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            .and()
-//                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider,kakaoService), UsernamePasswordAuthenticationFilter.class)
-//            .formLogin().disable()
-//            .httpBasic().disable();
-//
-//        return http.build();
-//    }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 

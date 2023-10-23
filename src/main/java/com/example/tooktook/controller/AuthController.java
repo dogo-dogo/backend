@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthController {
 
     private final KakaoService kakaoService;
-    private final AuthTokensGenerator authTokensGenerator;
     @PostMapping("/auth/kakao")
     public ApiResponse<AuthTokens> loginKakao(@RequestBody KakaoLoginParams kakaoAccessCode, HttpServletResponse response) {
 
@@ -38,21 +37,4 @@ public class AuthController {
         return ResponseEntity.ok(code);
     }
 
-
-//    @GetMapping("/check-access-token")
-//    public ResponseEntity<MemberDto> findByAccessToken(@RequestHeader("Authorization") String accessToken) {
-//
-//        String actualAccessToken = extractAccessToken(accessToken);
-//
-//        Long memberId = authTokensGenerator.extractMemberId(actualAccessToken);
-//
-//        return ResponseEntity.ok(kakaoService.getMemberInfo(memberId));
-//    }
-//
-//    private String extractAccessToken(String authorizationHeader) {
-//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//            return authorizationHeader.substring(7);
-//        }
-//        return null;
-//    }
 }

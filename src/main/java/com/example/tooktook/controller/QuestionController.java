@@ -6,6 +6,7 @@ import com.example.tooktook.model.dto.AnswerDto;
 import com.example.tooktook.model.dto.CategoryDto;
 import com.example.tooktook.model.dto.CategoryListDto;
 import com.example.tooktook.model.dto.QuestionDto;
+import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.service.Neo4jService;
 import io.swagger.annotations.Api;
@@ -27,7 +28,7 @@ public class QuestionController {
 
     @PostMapping("/default")
     public ApiResponse<Member> getMemberId(
-            @AuthenticationPrincipal UserDetails loginMember) {
+            @AuthenticationPrincipal MemberDetailsDto loginMember) {
 
         return ApiResponse.ok(ResponseCode.Normal.CREATE,
                 neo4jService.createMemberWithDefault(loginMember.getUsername()));
@@ -41,17 +42,17 @@ public class QuestionController {
 
     }
     @GetMapping("/find/category")
-    public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal UserDetails loginMember){
+    public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
                 neo4jService.getAllCategoryCount(loginMember.getUsername()));
     }
     @GetMapping("/find/question")
-    public ApiResponse<List<QuestionDto>> getCategoryToQuestion(@AuthenticationPrincipal UserDetails loginMember, @RequestParam Long cid){
+    public ApiResponse<List<QuestionDto>> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
                 neo4jService.getCategoryToQuestion(loginMember.getUsername(),cid));
     }
     @DeleteMapping("/delete/answer")
-    public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal UserDetails loginMember, @RequestParam Long answerId){
+    public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){
         neo4jService.deleteToAnswerId(loginMember.getUsername(),answerId);
         return ApiResponse.ok(ResponseCode.Normal.DELETE,String.format("{%d} 이 삭제 됨",answerId));
     }

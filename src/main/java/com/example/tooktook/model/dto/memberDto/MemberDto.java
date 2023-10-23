@@ -1,4 +1,4 @@
-package com.example.tooktook.model.dto;
+package com.example.tooktook.model.dto.memberDto;
 
 import com.example.tooktook.model.entity.Member;
 import lombok.*;

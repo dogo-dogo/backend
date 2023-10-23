@@ -1,7 +1,7 @@
 package com.example.tooktook.model.repository;
 
 
-import com.example.tooktook.model.dto.CategoryListDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.entity.Category;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;

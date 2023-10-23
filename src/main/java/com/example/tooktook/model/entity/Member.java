@@ -17,8 +17,7 @@ import java.util.List;
 @Node
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AuditOverride(forClass = BaseTimeEntity.class)
-public class Member extends BaseTimeEntity{
+public class Member{
     @Id
     @GeneratedValue
     private Long memberId;

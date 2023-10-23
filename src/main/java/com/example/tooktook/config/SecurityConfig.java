@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider,kakaoService), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
                     .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                    .antMatchers("/api/auth/**", "/" ,"/api/kakao/**", "/api/ques/**").permitAll()
+                    .antMatchers("/api/auth/**", "/**" ,"/api/kakao/**", "/api/ques/**").permitAll()
                     .antMatchers("/api/**").authenticated()
                     .anyRequest().authenticated()
                 .and().formLogin().disable()

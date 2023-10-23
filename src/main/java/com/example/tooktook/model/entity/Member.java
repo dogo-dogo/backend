@@ -42,12 +42,14 @@ public class Member{
     private MemberRole role;
 
     @Builder
-    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role){
+    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role,String color,String decorate ){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
         this.gender = gender;
         this.visit = visit;
         this.role = role;
+        this.color=color;
+        this.decorate=decorate;
     }
 
     public void changeVisit(){

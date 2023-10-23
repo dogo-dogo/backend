@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.tooktook.model.dto.ImageFileDto;
 import com.example.tooktook.model.dto.S3Dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,9 +56,11 @@ public class S3Service {
     }
     */
 
-    public String getS3(String bucket, String fileName) {
+    public String getS3(String bucket, ImageFileDto imageFileDto) {
+        String dolorColor=imageFileDto.getDoorColor();
+        String decoration=imageFileDto.getDecoration();
+        return amazonS3.getUrl(bucket, dolorColor).toString();
 
-        return amazonS3.getUrl(bucket, fileName).toString();
     }
 
     /*

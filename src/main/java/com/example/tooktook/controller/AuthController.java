@@ -2,10 +2,7 @@ package com.example.tooktook.controller;
 
 import com.example.tooktook.common.response.ApiResponse;
 import com.example.tooktook.common.response.ResponseCode;
-import com.example.tooktook.component.jwt.JwtTokenProvider;
 import com.example.tooktook.component.security.AuthTokens;
-import com.example.tooktook.component.security.AuthTokensGenerator;
-import com.example.tooktook.model.dto.MemberDto;
 import com.example.tooktook.oauth.kakao.KakaoLoginParams;
 import com.example.tooktook.service.KakaoService;
 import lombok.RequiredArgsConstructor;

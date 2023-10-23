@@ -32,6 +32,7 @@ public class ResponseCode {
         JWT_EXCEPTION(HttpStatus.UNAUTHORIZED,"JWT 토큰 예외가 발생하였습니다."),
         INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러"),
         BAD_REQUEST(HttpStatus.BAD_REQUEST,"404 에러"),
+        PAGE_OVER(HttpStatus.BAD_REQUEST,"페이지가 초과 하였습니다."),
 
         ;
 

@@ -1,12 +1,10 @@
 package com.example.tooktook.service;
 
-import com.example.tooktook.common.response.ApiResponse;
 import com.example.tooktook.common.response.ResponseCode;
-import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.AnswerDto;
-import com.example.tooktook.model.dto.CategoryListDto;
-import com.example.tooktook.model.dto.QuestionDto;
+import com.example.tooktook.model.dto.answerDto.AnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
 import com.example.tooktook.model.entity.Category;
 import com.example.tooktook.model.entity.Answer;
@@ -20,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -94,6 +93,7 @@ public class Neo4jService {
             Answer answer = new Answer();
             answer.setMainText(answerDto.getMainText());
             answer.setOptionalText(answerDto.getOptionalText());
+            answer.setCreatedAt(LocalDateTime.now());
 
             // 질문과 답변을 연결
             question.askAnswer(answer);

@@ -1,4 +1,4 @@
-package com.example.tooktook.model.dto;
+package com.example.tooktook.model.dto.answerDto;
 
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;

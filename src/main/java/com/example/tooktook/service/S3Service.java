@@ -24,6 +24,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    /*
     public S3Dto upload(MultipartFile multipartFile, String dirName) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
@@ -52,11 +53,14 @@ public class S3Service {
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         return getS3(bucket, fileName);
     }
+    */
 
-    private String getS3(String bucket, String fileName) {
+    public String getS3(String bucket, String fileName) {
+
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
+    /*
     private void removeFile(File file) {
         file.delete();
     }
@@ -79,4 +83,6 @@ public class S3Service {
         }
         amazonS3.deleteObject(bucket, s3Dto.getKey());
     }
+
+     */
 }

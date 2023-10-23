@@ -16,13 +16,28 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class S3Controller {
 
+    private final S3Service s3Service;
     @GetMapping("/getimageinfo")
-    @ResponseBody
-    public void getImageInfo (@RequestBody ImageFileDto imageFileDto){
-        imageFileDto.getDecoration();
-        imageFileDto.getDoorColor();
 
+    public ImageFileDto getImageInfo (@RequestBody ImageFileDto imageFileDto){
+        imageFileDto.getDoorColor();
+        imageFileDto.getDecoration();
+        //String url=putImageInfo(imageFileDto);
+        //System.out.println("geturl"+url);
+        return imageFileDto;
     }
+
+    @PostMapping("/putimageinfo")
+    public String putImageInfo(ImageFileDto imageFileDto){
+        String dolorColor=(imageFileDto.getDoorColor())+".png";
+        String decoration=imageFileDto.getDecoration();
+        String dolorColorUrl=s3Service.getS3("dogo-dogo",dolorColor);
+        System.out.println("posturl"+dolorColorUrl);
+        return dolorColorUrl;
+    }
+
+
+
 
 
     /*

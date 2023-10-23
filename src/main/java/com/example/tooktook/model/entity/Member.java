@@ -3,12 +3,15 @@ package com.example.tooktook.model.entity;
 import com.example.tooktook.model.dto.enumDto.MemberRole;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 @Node
@@ -22,11 +25,14 @@ public class Member extends BaseTimeEntity{
     @Column(columnDefinition = "NVARCHAR(30) NOT NULL")
     private String loginEmail;
     @Column(columnDefinition = "NVARCHAR(30) NOT NULL")
+
     private String nickname;
     @Column(columnDefinition = "NVARCHAR(10)")
     private String gender;
     @Column(columnDefinition = "NVARCHAR(20)")
     private String color;
+
+
     @Column(columnDefinition = "NVARCHAR(255)")
     private String decorate;
 
@@ -47,6 +53,9 @@ public class Member extends BaseTimeEntity{
 
     public void changeVisit(){
         this.visit = Boolean.TRUE;
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     @Relationship(type = "CATEGORY")

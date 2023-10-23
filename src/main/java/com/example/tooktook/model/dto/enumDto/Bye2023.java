@@ -1,4 +1,4 @@
-package com.example.tooktook.model.enumDto;
+package com.example.tooktook.model.dto.enumDto;
 
 public enum Bye2023 {
     QUESTION_1("2023년의 %s(을)를 7글자로 표현해줘"),

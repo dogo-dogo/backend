@@ -9,7 +9,6 @@ import java.util.List;
 @Node
 @Getter
 @Setter
-
 public class Question {
     @Id
     @GeneratedValue

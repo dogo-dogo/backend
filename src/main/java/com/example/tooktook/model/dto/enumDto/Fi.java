@@ -1,4 +1,4 @@
-package com.example.tooktook.model.enumDto;
+package com.example.tooktook.model.dto.enumDto;
 
 public enum Fi {
     QUESTION_1("%s(을)를 너 친구들 한테 소개 하면 뭐라고 소개 할꺼야?"),

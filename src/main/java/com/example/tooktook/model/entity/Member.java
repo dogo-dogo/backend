@@ -1,5 +1,6 @@
 package com.example.tooktook.model.entity;
 
+import com.example.tooktook.model.dto.enumDto.MemberRole;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.validator.constraints.Length;
@@ -13,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
-
 @Node
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,12 +39,16 @@ public class Member extends BaseTimeEntity{
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
 
+    @Enumerated(EnumType.STRING)
+    private MemberRole role;
+
     @Builder
-    public Member (String loginEmail, String nickname, String gender,Boolean visit){
+    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
         this.gender = gender;
         this.visit = visit;
+        this.role = role;
     }
 
     public void changeVisit(){

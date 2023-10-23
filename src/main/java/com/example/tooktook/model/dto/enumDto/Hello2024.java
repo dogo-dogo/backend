@@ -1,4 +1,4 @@
-package com.example.tooktook.model.enumDto;
+package com.example.tooktook.model.dto.enumDto;
 
 public enum Hello2024 {
     QUESTION_1("내년은 %s와 어떤 한 해가 되 었으면 좋겠어?"),

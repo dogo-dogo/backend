@@ -1,4 +1,4 @@
-package com.example.tooktook.model.enumDto;
+package com.example.tooktook.model.dto.enumDto;
 
 public enum Growth {
     QUESTION_1("%s를 만나 면서 한 새로운 경험은 뭐야?"),

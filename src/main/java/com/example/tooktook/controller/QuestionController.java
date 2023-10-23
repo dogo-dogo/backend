@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class QuestionController {
     }
 
     @PostMapping("/{questionId}/answers")
-    public void addAnswerToQuestion(@PathVariable Long questionId, @RequestBody AnswerDto answerdto) {
+    public void addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
         neo4jService.addAnswerToQuestion(questionId,answerdto);
     }
     @GetMapping("/find/category/{loginMember}")

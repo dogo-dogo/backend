@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,18 +12,19 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
 
     private final Key key;
-
 
     public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-
     public String generate(String subject, Date expiredAt) {
+//        Claims claims = Jwts.claims();
+//        claims.put("memberEmail",subject);
         return Jwts.builder()
             .setSubject(subject)
             .setExpiration(expiredAt)
@@ -30,31 +32,10 @@ public class JwtTokenProvider {
             .compact();
     }
 
-
     public String extractSubject(String accessToken) {
         Claims claims = parseClaims(accessToken);
         return claims.getSubject();
     }
-
-
-    public void validate(String accessToken) {
-        try {
-            Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody();
-        } catch (SignatureException ex) {
-            throw new JwtException("invalid token request exception - Incorrect signature");
-        } catch (MalformedJwtException ex) {
-            throw new JwtException("invalid token request exception - malformed jwt token");
-        } catch (ExpiredJwtException ex) {
-            throw ex;
-        } catch (UnsupportedJwtException ex) {
-            throw new JwtException("invalid token request exception - Illegal argument token");
-        }
-    }
-
 
     private Claims parseClaims(String accessToken) {
 
@@ -64,5 +45,14 @@ public class JwtTokenProvider {
             .parseClaimsJws(accessToken)
             .getBody();
 
+    }
+    public String getMemberId(String accessToken){
+        return parseClaims(accessToken)
+                .get("sub", String.class);
+    }
+
+    public boolean isExpired(String token) {
+        Date expiredDate = parseClaims(token).getExpiration();
+        return expiredDate.before(new Date());
     }
 }

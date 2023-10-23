@@ -1,61 +1,68 @@
 package com.example.tooktook.model.entity;
 
-import com.example.tooktook.model.dto.Neo4Dto;
+import com.example.tooktook.model.dto.enumDto.MemberRole;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
-
 @Node
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AuditOverride(forClass = BaseTimeEntity.class)
-public class Member extends BaseTimeEntity{
+public class Member{
     @Id
     @GeneratedValue
     private Long memberId;
     @Column(columnDefinition = "NVARCHAR(30) NOT NULL")
     private String loginEmail;
     @Column(columnDefinition = "NVARCHAR(30) NOT NULL")
+
     private String nickname;
     @Column(columnDefinition = "NVARCHAR(10)")
     private String gender;
     @Column(columnDefinition = "NVARCHAR(20)")
     private String color;
+
+
     @Column(columnDefinition = "NVARCHAR(255)")
-    private String size;
+    private String decorate;
 
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
 
+    @Enumerated(EnumType.STRING)
+    private MemberRole role;
+
     @Builder
-    public Member (String loginEmail, String nickname, String gender,Boolean visit){
+    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
         this.gender = gender;
         this.visit = visit;
+        this.role = role;
     }
 
-    public void update(Neo4Dto neo4Dto){
-        this.color = neo4Dto.getColor();
-        this.size = neo4Dto.getSize();
-        this.nickname = neo4Dto.getNickName();
-    }
     public void changeVisit(){
         this.visit = Boolean.TRUE;
     }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
-    @Relationship(type = "ASKS")
-    private List<Question> questions = new ArrayList<>();
+    @Relationship(type = "CATEGORY")
+    private List<Category> categories = new ArrayList<>();
 
-    public void askQuestion(Question question) {
-        questions.add(question);
+
+    public void addCategory(Category category) {
+        categories.add(category);
     }
 
 }

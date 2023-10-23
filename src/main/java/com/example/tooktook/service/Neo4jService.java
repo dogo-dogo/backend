@@ -1,68 +1,99 @@
 package com.example.tooktook.service;
 
-import com.example.tooktook.component.security.CurrentMember;
-import com.example.tooktook.exception.ErrorCode;
+import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.Neo4Dto;
-import com.example.tooktook.model.dto.QuestionDTO;
-import com.example.tooktook.model.dto.QuestionEnum;
+import com.example.tooktook.model.dto.answerDto.AnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.questionDto.QuestionDto;
+import com.example.tooktook.model.dto.enumDto.*;
+import com.example.tooktook.model.entity.Category;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
+import com.example.tooktook.model.repository.CategoryNeo4jRepository;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.model.repository.QuestionNeo4jRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class Neo4jService {
     private final MemberNeo4jRepository memberNeo4jRepository;
 
     private final QuestionNeo4jRepository questionNeo4jRepository;
 
+    private final CategoryNeo4jRepository categoryNeo4jRepository;
     private final AnswerNeo4jRepository answerNeo4jRepository;
-    public Member createMemberWithDefault(Long memberId ,Neo4Dto neo4Dto) {
-        Member member = memberNeo4jRepository.findByMemberId(memberId)
-                .orElse(null);
-        if(!member.getVisit()) { // 회원이 존재 하지 않는다면 새로운 회원의 정보를 생성
 
-            List<Question> questions = Arrays.stream(QuestionEnum.values())
-                    .map(questionEnum -> {
-                        Question question = new Question();
-                        question.setText(questionEnum.getText());
-                        return question;
-                    })
-                    .peek(questionNeo4jRepository::save)
-                    .collect(Collectors.toList());
+    @Transactional
+    public Member createMemberWithDefault(String memberEmail) {
 
-            member.update(neo4Dto);
-            member.changeVisit();
+        Member member = memberNeo4jRepository.findByLoginEmail(memberEmail)
+                .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
-            for (Question question : questions) {
-                member.askQuestion(question);
+        String memberNickName = member.getNickname();
+
+        if (!member.getVisit()) {
+
+            for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+                Category category = new Category(categoryEnum.getText());
+                member.addCategory(category);
+
+                switch (categoryEnum.getText()){
+                    case "Bye 2023":
+                        Arrays.stream(Bye2023.values())
+                                .map(bye2023Enum -> new Question(String.format(bye2023Enum.getText(), memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "칭찬":
+                        Arrays.stream(Compliment.values())
+                                .map(complimentEnum -> new Question(String.format(complimentEnum.getText(), memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "만약에":
+                        Arrays.stream(Fi.values())
+                                .map(fiEnum -> new Question(String.format(fiEnum.getText(),memberNickName,memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "성장":
+                        Arrays.stream(Growth.values())
+                                .map(growthEnum -> new Question(String.format(growthEnum.getText(),memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                    case "Hello 2024":
+                        Arrays.stream(Hello2024.values())
+                                .map(hello2024Enum -> new Question(String.format(hello2024Enum.getText(),memberNickName)))
+                                .forEach(category::askQuestion);
+                        break;
+                }
+
             }
-
-            memberNeo4jRepository.save(member);
-        }
-        else{
-            member.update(neo4Dto);
+            member.changeVisit();
             memberNeo4jRepository.save(member);
         }
         return member;
+
     }
 
-    public String addAnswerToQuestion(Long questionId, String answerText) {
+    @Transactional
+    public void addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
+
+        // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
+
         if (questionOptional.isPresent()) {
             Question question = questionOptional.get();
             Answer answer = new Answer();
-            answer.setText(answerText);
+            answer.setMainText(answerDto.getMainText());
+            answer.setOptionalText(answerDto.getOptionalText());
+            answer.setCreatedAt(LocalDateTime.now());
 
             // 질문과 답변을 연결
             question.askAnswer(answer);
@@ -70,13 +101,48 @@ public class Neo4jService {
             questionNeo4jRepository.save(question);
             answerNeo4jRepository.save(answer);
 
-            return "답변이 추가되었습니다.";
+//            return "답변이 추가되었습니다.";
         } else {
-            throw new GlobalException(ErrorCode.WRONG_AUTHORIZATION_HEADER);
+            throw new GlobalException(ResponseCode.ErrorCode.NOT_FIND_QUESTION_ID);
         }
     }
 
-    public List<QuestionDTO> findMemberIdToQuestionId(CurrentMember loginMember) {
-        return memberNeo4jRepository.findQuestionsByMemberId(loginMember.getMemberId());
+    public List<CategoryListDto> getAllCategoryCount(String loginMember) {
+
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getMemberId();
+
+
+        List<CategoryListDto> categoryListDtoList = categoryNeo4jRepository.findCategoryByCount(memberId);
+
+
+        int totalSize = categoryListDtoList.stream()
+                .mapToInt(CategoryListDto::getAnswerCount)
+                .sum();
+        categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
+
+        return categoryListDtoList;
+    }
+
+    public List<QuestionDto> getCategoryToQuestion(String loginMember, Long cid) {
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getMemberId();
+
+        return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
+
+    }
+
+    @Transactional
+    public void deleteToAnswerId(String loginMember, Long answerId) {
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getMemberId();
+
+        Answer answer = answerNeo4jRepository.findById(answerId)
+                .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
+
+        answerNeo4jRepository.delete(answer);
     }
 }

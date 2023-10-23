@@ -1,18 +1,20 @@
 package com.example.tooktook.controller;
 
-import com.example.tooktook.component.security.CurrentMember;
-import com.example.tooktook.component.security.LoginMember;
-import com.example.tooktook.model.dto.Neo4Dto;
-import com.example.tooktook.model.dto.QuestionDTO;
+import com.example.tooktook.common.response.ApiResponse;
+import com.example.tooktook.common.response.ResponseCode;
+import com.example.tooktook.common.response.ValidMember;
+import com.example.tooktook.model.dto.answerDto.AnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.questionDto.QuestionDto;
+import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.entity.Member;
-import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.service.Neo4jService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ques")
@@ -22,19 +24,37 @@ public class QuestionController {
     private final Neo4jService neo4jService;
 
     @PostMapping("/default")
-    public ResponseEntity<Member> getMemberId(
-            @LoginMember CurrentMember loginMember,
-            @RequestBody Neo4Dto neo4Dto) {
-        return ResponseEntity.ok(neo4jService.createMemberWithDefault(loginMember.getMemberId(),neo4Dto));
+    public ApiResponse<Member> getMemberId(
+            @AuthenticationPrincipal MemberDetailsDto loginMember) {
+        ValidMember.validCheckNull(loginMember);
+        return ApiResponse.ok(ResponseCode.Normal.CREATE,
+                neo4jService.createMemberWithDefault(loginMember.getUsername()));
     }
 
     @PostMapping("/{questionId}/answers")
-    public ResponseEntity<String> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody String answerText) {
+    public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
 
-        return ResponseEntity.ok(neo4jService.addAnswerToQuestion(questionId,answerText));
+        neo4jService.addAnswerToQuestion(questionId,answerdto);
+        return ApiResponse.ok(ResponseCode.Normal.CREATE,
+                String.format("추가한 questionId > {%d} ", questionId));
+
     }
-    @GetMapping("/find")
-    public ResponseEntity<List<QuestionDTO>> getMemberIdToAllQuestionId(@LoginMember CurrentMember loginMember){
-        return ResponseEntity.ok(neo4jService.findMemberIdToQuestionId(loginMember));
+    @GetMapping("/find/category")
+    public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
+        ValidMember.validCheckNull(loginMember);
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
+                neo4jService.getAllCategoryCount(loginMember.getUsername()));
+    }
+    @GetMapping("/find/question")
+    public ApiResponse<List<QuestionDto>> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
+        ValidMember.validCheckNull(loginMember);
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
+                neo4jService.getCategoryToQuestion(loginMember.getUsername(),cid));
+    }
+    @DeleteMapping("/delete/answer")
+    public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){
+        ValidMember.validCheckNull(loginMember);
+        neo4jService.deleteToAnswerId(loginMember.getUsername(),answerId);
+        return ApiResponse.ok(ResponseCode.Normal.DELETE,String.format("{%d} 이 삭제 됨",answerId));
     }
 }

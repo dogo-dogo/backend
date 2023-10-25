@@ -1,14 +1,14 @@
 package com.example.tooktook.controller;
 
+import com.example.tooktook.common.response.ApiResponse;
+import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
-import com.example.tooktook.model.entity.Answer;
-import com.example.tooktook.model.repository.AnswerNeo4jRepository;
 import com.example.tooktook.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -39,5 +36,9 @@ public class AnswerController {
 
         return answerService.getAnswersByCategory(pageable,memberEmail);
     }
-
+    @GetMapping("/answers/notify")
+    public ApiResponse<Integer> getNotificationByAnswer(@AuthenticationPrincipal MemberDetailsDto memberEmail){
+        ValidMember.validCheckNull(memberEmail);
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getNotification(memberEmail.getId()));
+    }
 }

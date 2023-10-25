@@ -6,15 +6,10 @@ import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
-import com.example.tooktook.model.entity.Category;
-import com.example.tooktook.model.entity.Answer;
-import com.example.tooktook.model.entity.Member;
-import com.example.tooktook.model.entity.Question;
-import com.example.tooktook.model.repository.AnswerNeo4jRepository;
-import com.example.tooktook.model.repository.CategoryNeo4jRepository;
-import com.example.tooktook.model.repository.MemberNeo4jRepository;
-import com.example.tooktook.model.repository.QuestionNeo4jRepository;
+import com.example.tooktook.model.entity.*;
+import com.example.tooktook.model.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +21,7 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class Neo4jService {
     private final MemberNeo4jRepository memberNeo4jRepository;
+    private final NotificationRepository notificationRepository;
 
     private final QuestionNeo4jRepository questionNeo4jRepository;
 
@@ -39,9 +35,10 @@ public class Neo4jService {
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
         String memberNickName = member.getNickname();
-
         if (!member.getVisit()) {
-
+            Notification notification = new Notification();
+            notification.setBeforeCnt(0);
+            member.addNotification(notification);
             for (CategoryEnum categoryEnum : CategoryEnum.values()) {
                 Category category = new Category(categoryEnum.getText());
                 member.addCategory(category);
@@ -143,6 +140,10 @@ public class Neo4jService {
         Answer answer = answerNeo4jRepository.findById(answerId)
                 .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
 
+        Notification notification = notificationRepository.findByNotification(memberId);
+        notification.setBeforeCnt(notification.getBeforeCnt()-1);
+
+        notificationRepository.save(notification);
         answerNeo4jRepository.delete(answer);
     }
 }

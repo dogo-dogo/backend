@@ -3,6 +3,7 @@ package com.example.tooktook.model.repository;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
 import com.example.tooktook.model.entity.Answer;
+import com.example.tooktook.model.entity.Notification;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,6 @@ public interface AnswerNeo4jRepository extends Neo4jRepository<Answer, Long> {
             "WHERE id(M) = $memberId " +
             "RETURN count(A)")
     int countByMemberId(@Param("memberId") Long memberId);
+
+
 }

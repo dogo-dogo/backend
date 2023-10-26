@@ -22,10 +22,14 @@ public class S3Controller {
 
     private final S3Service s3Service;
 
-    @PostMapping("/putimageinfo")
-    public ApiResponse<?> putImageInfo(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
-        //String dolorColor=imageFileDto.getDoorColor();
-        //String decoration=imageFileDto.getDecoration();
+    @PostMapping("/choose-door-deco")
+    public ApiResponse<?> chooseDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
+        String dolorColorUrl=s3Service.getS3("dogo-dogo",imageFileDto);
+        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,dolorColorUrl);
+    }
+
+    @PostMapping("/put-door_deco")
+    public ApiResponse<?> putDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
         String dolorColorUrl=s3Service.getS3("dogo-dogo",imageFileDto);
         return ApiResponse.ok(ResponseCode.Normal.SUCCESS,dolorColorUrl);
     }

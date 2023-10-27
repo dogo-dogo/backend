@@ -1,4 +1,4 @@
-package com.example.tooktook.model.dto;
+package com.example.tooktook.model.dto.decoDto;
 
 import lombok.Builder;
 import lombok.Getter;

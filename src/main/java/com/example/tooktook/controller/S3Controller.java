@@ -2,18 +2,16 @@ package com.example.tooktook.controller;
 
 import com.example.tooktook.common.response.ApiResponse;
 import com.example.tooktook.common.response.ResponseCode;
-import com.example.tooktook.model.dto.ImageFileDto;
-import com.example.tooktook.model.dto.S3Dto;
+import com.example.tooktook.model.dto.decoDto.ImageFileDto;
+import com.example.tooktook.model.dto.decoDto.ImageUrlDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
+import com.example.tooktook.model.repository.MemberNeo4jRepository;
+import com.example.tooktook.service.MemberService;
 import com.example.tooktook.service.S3Service;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/s3")
@@ -22,16 +20,30 @@ public class S3Controller {
 
     private final S3Service s3Service;
 
-    @PostMapping("/choose-door-deco")
-    public ApiResponse<?> chooseDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
-        String dolorColorUrl=s3Service.getS3("dogo-dogo",imageFileDto);
-        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,dolorColorUrl);
-    }
+    private final MemberNeo4jRepository memberNeo4jRepository;
+    private final MemberService memberService;
 
-    @PostMapping("/put-door_deco")
-    public ApiResponse<?> putDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
-        String dolorColorUrl=s3Service.getS3("dogo-dogo",imageFileDto);
-        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,dolorColorUrl);
+    /*
+    @PostMapping("/choose-door-deco")
+
+    public ApiResponse<?> chooseDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
+        ImageUrlDto imageUrlDto =s3Service.getS3Url("dogo-dogo",imageFileDto);
+        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,imageUrlDto);
+    }
+    */
+
+    @PostMapping("/save-door-deco")
+    public ApiResponse<?> saveDoorDeco(@RequestBody ImageFileDto imageFileDto,
+                            @AuthenticationPrincipal MemberDetailsDto member){
+
+        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,
+                s3Service.saveS3Url("dogo-dogo",imageFileDto,member));
+    }
+    @PostMapping("/send-door-deco")
+    public void putDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
+//        ImageUrlDto imageUrlDto =s3Service.getS3Url("dogo-dogo",imageFileDto);
+//        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,imageUrlDto);
+
     }
 
 

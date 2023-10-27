@@ -59,6 +59,14 @@ public class Member{
         this.nickname = nickname;
     }
 
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setDecorate(String decorate) {
+        this.decorate = decorate;
+    }
+
     @Relationship(type = "CATEGORY")
     private List<Category> categories = new ArrayList<>();
 

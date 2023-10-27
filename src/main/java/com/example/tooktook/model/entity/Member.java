@@ -31,7 +31,6 @@ public class Member{
     @Column(columnDefinition = "NVARCHAR(20)")
     private String color;
 
-
     @Column(columnDefinition = "NVARCHAR(255)")
     private String decorate;
 
@@ -60,9 +59,15 @@ public class Member{
     @Relationship(type = "CATEGORY")
     private List<Category> categories = new ArrayList<>();
 
+    @Relationship(type = "NOTIFICATION")
+    private List<Notification> notifications = new ArrayList<>();
+
 
     public void addCategory(Category category) {
         categories.add(category);
+    }
+    public void addNotification(Notification notification){
+        notifications.add(notification);
     }
 
 }

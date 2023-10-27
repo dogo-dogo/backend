@@ -21,7 +21,6 @@ import javax.validation.constraints.Pattern;
 @RequestMapping("/api/member")
 public class MemberController {
 
-    private final MemberNeo4jRepository memberNeo4jRepository;
     private final MemberService memberService;
     @PutMapping("/nickname")
     public ApiResponse<?> setNickName(
@@ -30,11 +29,9 @@ public class MemberController {
             @AuthenticationPrincipal MemberDetailsDto loginMember
     ) {
         ValidMember.validCheckNull(loginMember);
-        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember.getUsername())
-                .get().getMemberId();
 
-        memberService.setNickName(nickName, memberId);
-        return ApiResponse.ok(ResponseCode.Normal.UPDATE,memberId);
+        memberService.setNickName(nickName, loginMember.getId());
+        return ApiResponse.ok(ResponseCode.Normal.UPDATE,loginMember.getId());
     }
 
 }

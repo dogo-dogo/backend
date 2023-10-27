@@ -1,7 +1,6 @@
 package com.example.tooktook.component.jwt;
 
 import com.example.tooktook.common.response.ResponseCode;
-import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.service.KakaoService;
@@ -17,8 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j

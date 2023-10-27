@@ -58,8 +58,8 @@ public class KakaoService {
                 .gender(oAuthInfoResponse.getGender())
                 .visit(Boolean.FALSE)
                 .role(MemberRole.KAKAO)
-                .color("default")
-                .decorate("default")
+                .doorImg("default")
+                .giftImg("default")
                 .build();
         log.error("newMember :: " + member.getMemberId());
         memberNeo4jRepository.save(member);

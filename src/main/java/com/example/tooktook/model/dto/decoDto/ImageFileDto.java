@@ -6,6 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ImageFileDto {
+    private String type;
     private String doorColor;
     private String decoration;
+
+
 }

@@ -10,6 +10,7 @@ import com.example.tooktook.service.MemberService;
 import com.example.tooktook.service.S3Service;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,46 +21,19 @@ public class S3Controller {
 
     private final S3Service s3Service;
 
-    private final MemberNeo4jRepository memberNeo4jRepository;
-    private final MemberService memberService;
 
-    /*
-    @PostMapping("/choose-door-deco")
-
-    public ApiResponse<?> chooseDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
-        ImageUrlDto imageUrlDto =s3Service.getS3Url("dogo-dogo",imageFileDto);
-        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,imageUrlDto);
-    }
-    */
-
-    @PostMapping("/save-door-deco")
+    @PostMapping("/save-door-img")
     public ApiResponse<?> saveDoorDeco(@RequestBody ImageFileDto imageFileDto,
                             @AuthenticationPrincipal MemberDetailsDto member){
 
-        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,
-                s3Service.saveS3Url("dogo-dogo",imageFileDto,member));
-    }
-    @PostMapping("/send-door-deco")
-    public void putDoorDeco(@RequestBody ImageFileDto imageFileDto, @AuthenticationPrincipal MemberDetailsDto member){
-//        ImageUrlDto imageUrlDto =s3Service.getS3Url("dogo-dogo",imageFileDto);
-//        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,imageUrlDto);
-
+        s3Service.saveS3Url(imageFileDto,member);
+        return ApiResponse.ok(ResponseCode.Normal.SUCCESS,String.format("%s님의 img 설정",member.getNickName()));
     }
 
-
-
-
-
-    /*
-    @PostMapping("/resource")
-    public S3Dto upload(@RequestPart("file") MultipartFile multipartFile) throws IOException {
-        return s3Service.upload(multipartFile,"upload");
+    @GetMapping("/get-img")
+    public ApiResponse<ImageUrlDto> getDoorImg(@AuthenticationPrincipal MemberDetailsDto member){
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,s3Service.getS3Url(member.getId()));
     }
 
-    @DeleteMapping("/resource")
-    public void remove(S3Dto s3Dto) {
-        s3Service.remove(s3Dto);
-    }
 
-    */
 }

@@ -117,10 +117,13 @@ public class Neo4jService {
         int totalSize = categoryListDtoList.stream()
                 .mapToInt(CategoryListDto::getAnswerCount)
                 .sum();
+
         categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
 
         return categoryListDtoList;
     }
+
+
 
     public List<QuestionDto> getCategoryToQuestion(String loginMember, Long cid) {
         Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)

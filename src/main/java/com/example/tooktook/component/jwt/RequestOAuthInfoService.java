@@ -22,7 +22,7 @@ public class RequestOAuthInfoService {
     public RequestOAuthInfoService(List<OAuthApiClient> clients) {
 
         this.clients = clients.stream().collect(
-            Collectors.toUnmodifiableMap(OAuthApiClient::oAuthProvider, Function.identity())
+                Collectors.toUnmodifiableMap(OAuthApiClient::oAuthProvider, Function.identity())
         );
     }
 

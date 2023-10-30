@@ -4,12 +4,12 @@ import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
 import com.example.tooktook.model.entity.*;
 import com.example.tooktook.model.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +80,7 @@ public class Neo4jService {
     }
 
     @Transactional
-    public void addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
+    public Long addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
 
         // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
@@ -97,6 +97,8 @@ public class Neo4jService {
 
             questionNeo4jRepository.save(question);
             answerNeo4jRepository.save(answer);
+
+            return answer.getAnswerId();
 
 //            return "답변이 추가되었습니다.";
         } else {
@@ -132,6 +134,12 @@ public class Neo4jService {
 
         return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
 
+    }
+    public List<QuestionAllDto> getAllCategoryToQuestions(String loginMember ){
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getMemberId();
+        return questionNeo4jRepository.findByAllAnswers(memberId);
     }
 
     @Transactional

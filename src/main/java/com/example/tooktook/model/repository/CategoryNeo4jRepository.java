@@ -14,16 +14,16 @@ public interface CategoryNeo4jRepository extends Neo4jRepository<Category,Long> 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category) " +
             "WHERE id(m) = $memberId " +
             "OPTIONAL MATCH (c)-[:ASKS]->(:Question)-[:HAS_ANSWER]->(aw:Answer) " +
-            "WITH c, COLLECT(aw) AS answerList " +
-            "WITH c, answerList, CASE WHEN answerList IS NULL THEN 0 ELSE SIZE(answerList) END as answerCount " +
-            "RETURN id(c) as cid, c.text as categoryName, answerCount, 0 as totalCount " +
+            "WITH COLLECT(aw) AS totalAnswerList " +
+            "WITH CASE WHEN totalAnswerList IS NULL THEN 0 ELSE SIZE(totalAnswerList) END as totalCount " +
+            "RETURN null as cid, \"전체\" as categoryName, 0 as answerCount, totalCount " +
             "UNION " +
             "MATCH (m:Member)-[:CATEGORY]->(c:Category) " +
             "WHERE id(m) = $memberId " +
             "OPTIONAL MATCH (c)-[:ASKS]->(:Question)-[:HAS_ANSWER]->(aw:Answer) " +
-            "WITH COLLECT(aw) AS totalAnswerList " +
-            "WITH CASE WHEN totalAnswerList IS NULL THEN 0 ELSE SIZE(totalAnswerList) END as totalCount " +
-            "RETURN null as cid, \"전체\" as categoryName, 0 as answerCount, totalCount ")
+            "WITH c, COLLECT(aw) AS answerList " +
+            "WITH c, answerList, CASE WHEN answerList IS NULL THEN 0 ELSE SIZE(answerList) END as answerCount " +
+            "RETURN id(c) as cid, c.text as categoryName, answerCount, 0 as totalCount ")
     List<CategoryListDto> findCategoryByCount(@Param("memberId") Long memberId);
 
 }

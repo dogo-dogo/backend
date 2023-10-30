@@ -5,9 +5,9 @@ import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
-import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.entity.Member;
+import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.service.Neo4jService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,9 +34,9 @@ public class QuestionController {
     @PostMapping("/{questionId}/answers")
     public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
 
-        neo4jService.addAnswerToQuestion(questionId,answerdto);
-        return ApiResponse.ok(ResponseCode.Normal.CREATE,
-                String.format("추가한 questionId > {%d} ", questionId));
+        Long answerId = neo4jService.addAnswerToQuestion(questionId,answerdto);
+
+        return ApiResponse.ok(ResponseCode.Normal.CREATE, answerId);
 
     }
     @GetMapping("/find/category")
@@ -45,12 +45,19 @@ public class QuestionController {
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
                 neo4jService.getAllCategoryCount(loginMember.getUsername()));
     }
+
     @GetMapping("/find/question")
-    public ApiResponse<List<QuestionDto>> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
+    public ApiResponse<?> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
         ValidMember.validCheckNull(loginMember);
-        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
-                neo4jService.getCategoryToQuestion(loginMember.getUsername(),cid));
+        if(cid == 99999){
+            return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
+                    neo4jService.getAllCategoryToQuestions(loginMember.getUsername()));
+        }else{
+            return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
+                    neo4jService.getCategoryToQuestion(loginMember.getUsername(),cid));
+        }
     }
+
     @DeleteMapping("/delete/answer")
     public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){
         ValidMember.validCheckNull(loginMember);

@@ -13,14 +13,12 @@ public class MemberDto {
     private String loginEmail;
     private String nickname;
     private String doorImg;
-    private String giftImg;
     public static MemberDto from(Member member) {
         return MemberDto.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .loginEmail(member.getLoginEmail())
                 .doorImg(member.getDoorImg())
-                .giftImg(member.getGiftImg())
                 .build();
     }
 }

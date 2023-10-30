@@ -2,13 +2,12 @@ package com.example.tooktook.service;
 
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
+import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
-import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Notification;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
-import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.model.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,5 +76,13 @@ public class AnswerService {
             notificationRepository.save(notification);
             return afterCnt - BeforeCnt;
         }
+    }
+
+    public AnswerDAO getAnswerDetails(MemberDetailsDto member, Long answerId) {
+
+        answerNeo4jRepository.findByAnswerId(answerId)
+                .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
+
+        return answerNeo4jRepository.findByAnswersDetails(member.getId(),answerId);
     }
 }

@@ -59,7 +59,6 @@ public class KakaoService {
                 .visit(Boolean.FALSE)
                 .role(MemberRole.KAKAO)
                 .doorImg("default")
-                .giftImg("default")
                 .build();
         log.error("newMember :: " + member.getMemberId());
         memberNeo4jRepository.save(member);

@@ -6,4 +6,5 @@ import lombok.Getter;
 public class QuestionDto {
     private Long qid;
     private String questions;
+    private Long aid;
 }

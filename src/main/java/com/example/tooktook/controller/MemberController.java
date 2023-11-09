@@ -33,6 +33,7 @@ public class MemberController {
 
         log.info("------------MemberController 시작 ----------------");
         log.info("--------------path : /api/member/nickname ---------------");
+        log.info("-------------------requestParm : {} ", nickName);
         ValidMember.validCheckNull(loginMember);
 
         memberService.setNickName(nickName, loginMember.getId());

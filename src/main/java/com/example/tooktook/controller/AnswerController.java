@@ -35,7 +35,9 @@ public class AnswerController {
 
         log.info("------------answerController 시작 ----------------");
         log.info("--------------path : /api/answers/ ---------------");
-
+        log.info("-------------------requestParm sort: {} ", sort);
+        log.info("-------------------requestParm page: {} ", page);
+        log.info("-------------------requestParm size: {} ", size);
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
 
 
@@ -55,7 +57,7 @@ public class AnswerController {
         ValidMember.validCheckNull(member);
         log.info("------------answerController 시작 ----------------");
         log.info("--------------path : /api/answers/details ---------------");
-
+        log.info("-------------------requestParm : {} ", answerId);
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getAnswerDetails(member,answerId));
     }
 }

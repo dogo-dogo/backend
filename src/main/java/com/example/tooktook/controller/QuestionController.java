@@ -43,6 +43,7 @@ public class QuestionController {
 
         log.info("------------QuestionController 시작 ----------------");
         log.info("--------------path : /api/ques/{questionId}/answers ---------------");
+        log.info("--------------PathVariable : {} ---------------" ,questionId);
 
         Long answerId = neo4jService.addAnswerToQuestion(questionId,answerdto);
 
@@ -65,7 +66,7 @@ public class QuestionController {
     public ApiResponse<?> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
         log.info("------------QuestionController 시작 ----------------");
         log.info("--------------path : /api/ques/find/question ---------------");
-
+        log.info("-------------------requestParm : {} ", cid);
         ValidMember.validCheckNull(loginMember);
         if(cid == 99999){
             return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
@@ -80,7 +81,7 @@ public class QuestionController {
     public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){
         log.info("------------QuestionController 시작 ----------------");
         log.info("--------------path : /api/ques/delete/answer ---------------");
-
+        log.info("-------------------requestParm : {} ", answerId);
         ValidMember.validCheckNull(loginMember);
         neo4jService.deleteToAnswerId(loginMember.getUsername(),answerId);
 

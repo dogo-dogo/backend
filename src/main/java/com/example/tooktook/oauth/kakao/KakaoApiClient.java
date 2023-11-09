@@ -5,6 +5,7 @@ import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
 import com.example.tooktook.oauth.client.OAuthProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoApiClient implements OAuthApiClient {
 
     private static final String GRANT_TYPE = "authorization_code";
@@ -40,6 +42,7 @@ public class KakaoApiClient implements OAuthApiClient {
     @Override
     public String requestAccessToken(OAuthLoginParams params) {
 
+
         String url = authUrl + "/oauth/token";
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -49,6 +52,10 @@ public class KakaoApiClient implements OAuthApiClient {
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
         body.add("client_secret",clientSecret);
+
+        log.info("---------------grant_type-----------" , GRANT_TYPE);
+        log.info("---------------client_id-----------" , clientId);
+        log.info("---------------client_secret-----------" , clientSecret);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 

@@ -10,6 +10,7 @@ import com.example.tooktook.model.dto.enumDto.*;
 import com.example.tooktook.model.entity.*;
 import com.example.tooktook.model.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class Neo4jService {
     private final MemberNeo4jRepository memberNeo4jRepository;
@@ -74,7 +76,10 @@ public class Neo4jService {
             }
             member.changeVisit();
             memberNeo4jRepository.save(member);
+
         }
+        log.info("------------QuestionController Service 종료 ----------------");
+        log.info("---------return Data > memberData.getMemberID : {} ",member.getMemberId());
         return member;
 
     }
@@ -102,12 +107,14 @@ public class Neo4jService {
 
 //            return "답변이 추가되었습니다.";
         } else {
+            log.error("답변 추가 에러 path : addAnswerToQuestion()");
             throw new GlobalException(ResponseCode.ErrorCode.NOT_FIND_QUESTION_ID);
         }
     }
 
     public List<CategoryListDto> getAllCategoryCount(String loginMember) {
 
+        log.info("------------QuestionService 시작 ----------------");
         Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
@@ -122,23 +129,30 @@ public class Neo4jService {
 
         categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
 
+        log.info("------------QuestionController 종료 ----------------");
+
         return categoryListDtoList;
     }
 
 
 
     public List<QuestionDto> getCategoryToQuestion(String loginMember, Long cid) {
+        log.info("------------QuestionService 시작 ----------------");
         Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
+        log.info("------------QuestionService 종료 ----------------");
         return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
 
     }
     public List<QuestionAllDto> getAllCategoryToQuestions(String loginMember ){
+        log.info("------------QuestionService 시작 ----------------");
         Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
+
+        log.info("------------QuestionService 종료 ----------------");
         return questionNeo4jRepository.findByAllAnswers(memberId);
     }
 

@@ -29,6 +29,7 @@ public class RequestOAuthInfoService {
 
     public OAuthInfoResponse request(OAuthLoginParams kakaoAccessCode) {
 
+
         OAuthApiClient client = clients.get(kakaoAccessCode.oAuthProvider());
         String accessToken = client.requestAccessToken(kakaoAccessCode);
         return client.requestOauthInfo(accessToken);

@@ -33,19 +33,29 @@ public class AnswerController {
 
         ValidMember.validCheckNull(memberEmail);
 
+        log.info("------------answerController 시작 ----------------");
+        log.info("--------------path : /api/answers/ ---------------");
+
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+
 
         return answerService.getAnswersByCategory(pageable,memberEmail);
     }
     @GetMapping("/answers/notify")
     public ApiResponse<Integer> getNotificationByAnswer(@AuthenticationPrincipal MemberDetailsDto memberEmail){
         ValidMember.validCheckNull(memberEmail);
+        log.info("------------answerController 시작 ----------------");
+        log.info("--------------path : /api/answers/notify ---------------");
+
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getNotification(memberEmail.getId()));
     }
     @GetMapping("/answers/details")
     public ApiResponse<AnswerDAO> getAnswerDetails(@AuthenticationPrincipal MemberDetailsDto member,
                                                    @RequestParam Long answerId){
         ValidMember.validCheckNull(member);
+        log.info("------------answerController 시작 ----------------");
+        log.info("--------------path : /api/answers/details ---------------");
+
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getAnswerDetails(member,answerId));
     }
 }

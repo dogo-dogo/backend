@@ -10,6 +10,7 @@ import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.service.Neo4jService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/ques")
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionController {
 
     private final Neo4jService neo4jService;
@@ -27,6 +29,11 @@ public class QuestionController {
     public ApiResponse<Member> getMemberId(
             @AuthenticationPrincipal MemberDetailsDto loginMember) {
         ValidMember.validCheckNull(loginMember);
+
+        log.info("------------QuestionController 시작 ----------------");
+        log.info("--------------path : /api/ques/default ---------------");
+
+
         return ApiResponse.ok(ResponseCode.Normal.CREATE,
                 neo4jService.createMemberWithDefault(loginMember.getUsername()));
     }
@@ -34,13 +41,21 @@ public class QuestionController {
     @PostMapping("/{questionId}/answers")
     public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
 
+        log.info("------------QuestionController 시작 ----------------");
+        log.info("--------------path : /api/ques/{questionId}/answers ---------------");
+
         Long answerId = neo4jService.addAnswerToQuestion(questionId,answerdto);
 
+
+        log.info("------------QuestionController 종료 ----------------");
         return ApiResponse.ok(ResponseCode.Normal.CREATE, answerId);
 
     }
     @GetMapping("/find/category")
     public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
+        log.info("------------QuestionController 시작 ----------------");
+        log.info("--------------path : /api/ques/find/category ---------------");
+
         ValidMember.validCheckNull(loginMember);
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
                 neo4jService.getAllCategoryCount(loginMember.getUsername()));
@@ -48,6 +63,9 @@ public class QuestionController {
 
     @GetMapping("/find/question")
     public ApiResponse<?> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
+        log.info("------------QuestionController 시작 ----------------");
+        log.info("--------------path : /api/ques/find/question ---------------");
+
         ValidMember.validCheckNull(loginMember);
         if(cid == 99999){
             return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
@@ -60,8 +78,13 @@ public class QuestionController {
 
     @DeleteMapping("/delete/answer")
     public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){
+        log.info("------------QuestionController 시작 ----------------");
+        log.info("--------------path : /api/ques/delete/answer ---------------");
+
         ValidMember.validCheckNull(loginMember);
         neo4jService.deleteToAnswerId(loginMember.getUsername(),answerId);
+
+        log.info("------------QuestionController 종료 ----------------");
         return ApiResponse.ok(ResponseCode.Normal.DELETE,String.format("{%d} 이 삭제 됨",answerId));
     }
 }

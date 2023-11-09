@@ -12,6 +12,7 @@ import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @ResponseBody
 @Transactional(readOnly = true)
+@Slf4j
 public class S3Service {
 
     private final AmazonS3 amazonS3;
@@ -35,6 +37,7 @@ public class S3Service {
 
     @Transactional
     public void saveDoorS3Url(DoorImgDto doorImgDto, MemberDetailsDto memberDto) {
+        log.info("------------S3service 시작 ----------------");
         Member member = memberNeo4jRepository.findByMemberId(memberDto.getId())
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
@@ -49,12 +52,13 @@ public class S3Service {
         }catch (GlobalException e){
             throw new GlobalException(ResponseCode.ErrorCode.AWS_S3_ERROR);
         }
-
+        log.info("------------S3service 종료 ----------------");
         memberNeo4jRepository.save(member);
 
     }
     @Transactional
     public void saveGiftS3Url(MemberDetailsDto memberDto, GiftImgDto giftImgDto){
+        log.info("------------S3service 시작 ----------------");
         Member member = memberNeo4jRepository.findByMemberId(memberDto.getId())
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
@@ -70,24 +74,31 @@ public class S3Service {
         }catch (GlobalException e){
             throw new GlobalException(ResponseCode.ErrorCode.AWS_S3_ERROR);
         }
+        log.info("------------S3service 종료 ----------------");
         answerNeo4jRepository.save(answer);
     }
 
     private String getBucketS3Url(DoorImgDto doorImgDto){
+
+
         return amazonS3.getUrl(bucket,
                 String.format("%s_%s_%s", doorImgDto.getType(), doorImgDto.getDoorColor(), doorImgDto.getDecoration())
                         ).toString() + ".png";
     }
     private String getBucketS3Url(GiftImgDto giftImgDto){
+
         return amazonS3.getUrl(bucket,
                 String.format("%s_%s_%s", giftImgDto.getType(), giftImgDto.getGiftColor(), giftImgDto.getDecoration())
         ).toString() + ".png";
     }
 
     public String getS3Url(Long memberId) {
+        log.info("------------S3service 시작 ----------------");
         Member member = memberNeo4jRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
+        log.info("------------S3service 종료 ----------------");
+        log.info("return Data : > {}" , member.getDoorImg());
         return member.getDoorImg();
     }
 

@@ -2,6 +2,7 @@ package com.example.tooktook.component.security;
 
 import com.example.tooktook.component.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthTokensGenerator {
 
     private static final String BEARER_TYPE = "Bearer";
@@ -29,6 +31,7 @@ public class AuthTokensGenerator {
 
     public AuthTokens generate(String memberEmail, HttpServletResponse response) {
 
+        log.info("------------generate 시작 ----------------");
         long now = (new Date()).getTime();
         Date accessTokenExpiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         Date refreshTokenExpiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
@@ -40,6 +43,7 @@ public class AuthTokensGenerator {
         setAccessTokenInHeader(jwtAccessToken,response);
         setRefreshTokenInHeader(refreshToken,response);
 
+        log.info("------------generate 종료 ----------------");
         return AuthTokens.of(
             jwtAccessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME);
     }

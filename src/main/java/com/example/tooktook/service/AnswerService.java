@@ -39,8 +39,12 @@ public class AnswerService {
 
 
         if (startIdx > endIdx){
+            log.error("------------ERROR  종료 ----------------");
+            log.info("------------answerController > Service 종료 ----------------");
             throw new GlobalException(ResponseCode.ErrorCode.PAGE_OVER);
         }else{
+
+            log.info("------------answerController > Service 종료 ----------------");
             List<AnswerPageListDto> pagedAnswers = answers.subList(startIdx, endIdx);
             return new AnswerPageDto(pagedAnswers, curPage +1, calculateTotalPages(answers.size(), pageSize));
         }
@@ -74,6 +78,8 @@ public class AnswerService {
             Integer BeforeCnt = notification.getBeforeCnt();
             notification.setBeforeCnt(afterCnt);
             notificationRepository.save(notification);
+
+            log.info("------------answerController > Service 종료 ----------------");
             return afterCnt - BeforeCnt;
         }
     }
@@ -83,6 +89,7 @@ public class AnswerService {
         answerNeo4jRepository.findByAnswerId(answerId)
                 .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
 
+        log.info("------------answerController > Service 종료 ----------------");
         return answerNeo4jRepository.findByAnswersDetails(member.getId(),answerId);
     }
 }

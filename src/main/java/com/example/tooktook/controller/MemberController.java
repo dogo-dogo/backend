@@ -7,6 +7,7 @@ import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import javax.validation.constraints.Pattern;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -28,9 +30,14 @@ public class MemberController {
             String nickName,
             @AuthenticationPrincipal MemberDetailsDto loginMember
     ) {
+
+        log.info("------------MemberController 시작 ----------------");
+        log.info("--------------path : /api/member/nickname ---------------");
         ValidMember.validCheckNull(loginMember);
 
         memberService.setNickName(nickName, loginMember.getId());
+        log.info("------------MemberController 종료---------------");
+
         return ApiResponse.ok(ResponseCode.Normal.UPDATE,loginMember.getId());
     }
 

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @RequiredArgsConstructor
@@ -39,32 +41,52 @@ public class KakaoApiClient implements OAuthApiClient {
     }
 
 
+//    @Override
+//    public String requestAccessToken(OAuthLoginParams params) {
+//
+//
+//        String url = authUrl + "/oauth/token";
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//        MultiValueMap<String, String> body = params.makeBody();
+//        body.add("grant_type", GRANT_TYPE);
+//        body.add("client_id", clientId);
+//        body.add("client_secret",clientSecret);
+//
+//        log.info("---------------grant_type----------- : {} " , GRANT_TYPE);
+//        log.info("---------------client_id----------- : {} " , clientId);
+//        log.info("---------------client_secret----------- : {} " , clientSecret);
+//
+//        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
+//
+//        log.info("---------request : {} {}----------" , request.getBody() ,request.getHeaders());
+//        KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
+//
+//        assert response != null;
+//        log.info("-------------response : {} ----------- ",response.getAccessToken());
+//        return response.getAccessToken();
+//    }
     @Override
     public String requestAccessToken(OAuthLoginParams params) {
 
+            log.info("------------------new kakao logic ------------");
+            WebClient webClient = WebClient.create();
+            String url = authUrl + "/oauth/token";
 
-        String url = authUrl + "/oauth/token";
+            return webClient.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(BodyInserters.fromFormData("grant_type", GRANT_TYPE)
+                            .with("client_id", clientId)
+                            .with("client_secret", clientSecret)
+                            .with(params.makeBody()))
+                    .retrieve()
+                    .bodyToMono(KakaoTokens.class)
+                    .block()
+                    .getAccessToken();
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> body = params.makeBody();
-        body.add("grant_type", GRANT_TYPE);
-        body.add("client_id", clientId);
-        body.add("client_secret",clientSecret);
-
-        log.info("---------------grant_type----------- : {} " , GRANT_TYPE);
-        log.info("---------------client_id----------- : {} " , clientId);
-        log.info("---------------client_secret----------- : {} " , clientSecret);
-
-        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
-
-        log.info("---------request : {} {}----------" , request.getBody() ,request.getHeaders());
-        KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
-
-        assert response != null;
-        log.info("-------------response : {} ----------- ",response.getAccessToken());
-        return response.getAccessToken();
     }
 
 

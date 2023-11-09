@@ -53,9 +53,9 @@ public class KakaoApiClient implements OAuthApiClient {
         body.add("client_id", clientId);
         body.add("client_secret",clientSecret);
 
-        log.info("---------------grant_type-----------" , GRANT_TYPE);
-        log.info("---------------client_id-----------" , clientId);
-        log.info("---------------client_secret-----------" , clientSecret);
+        log.info("---------------grant_type----------- : {} " , GRANT_TYPE);
+        log.info("---------------client_id----------- : {} " , clientId);
+        log.info("---------------client_secret----------- : {} " , clientSecret);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 

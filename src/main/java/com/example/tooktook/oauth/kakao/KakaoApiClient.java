@@ -71,10 +71,12 @@ public class KakaoApiClient implements OAuthApiClient {
 
         String url = apiUrl + "/v2/user/me";
 
+        log.info("-----------requestOauthInfo -----------------");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         httpHeaders.set("Authorization", "Bearer " + accessToken);
 
+        log.info("-----------accessToken : {}  -----------------" , accessToken);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.gender\", \"kakao_account.profile\"]");
 

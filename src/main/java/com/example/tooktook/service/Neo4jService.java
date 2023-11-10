@@ -3,6 +3,8 @@ package com.example.tooktook.service;
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
+import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
@@ -170,5 +172,49 @@ public class Neo4jService {
 
         notificationRepository.save(notification);
         answerNeo4jRepository.delete(answer);
+    }
+
+
+    public RandomAnswerDto randomReadCategoryAndQuestion(Long memberId) {
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        List<QuestionDto> questionDtoList = new ArrayList<>();
+        Random rnd = new Random();
+
+        log.info("--------- random service Start ------------");
+        categoryDtoList = questionNeo4jRepository.findQuestionsByMemberId(memberId);
+        // [1,2,3,4,5]
+
+        log.info("-------------categoryDtoList size :  {} ------- ",categoryDtoList.size());
+
+        int rndCid = Math.toIntExact(
+                categoryDtoList.get(
+                        rnd.nextInt(categoryDtoList.size())
+                ).getCategoryId());
+
+        //random cid : [3]
+        log.info("--------------categoryDtoList random idx : {} " , rndCid);
+        questionDtoList = questionNeo4jRepository.findCategoryIdToQuestion(memberId, Long.valueOf(rndCid));
+        // 카테고리가 랜덤 3번인 질문들을 조회  [5,6,7,8,9]
+
+        int rndQid = Math.toIntExact(
+                questionDtoList.get(
+                        rnd.nextInt(questionDtoList.size())
+                ).getQid());
+
+        // random qid : [8]
+
+        log.info("-------------questionDtoList size :  {} ------- ",categoryDtoList.get(rndCid).getCategoryName());
+        log.info("-------------questionDtoList qid :  {} ------- ",questionDtoList.get(rndQid).getQid());
+        log.info("-------------questionDtoList ques :  {} ------- ",questionDtoList.get(rndQid).getQuestions());
+        log.info("-------------questionDtoList aid :  {} ------- ",questionDtoList.get(rndQid).getAid());
+
+        return RandomAnswerDto.builder()
+                .rndId(rndCid)
+                .categoryText(categoryDtoList.get(rndCid).getCategoryName())
+                .qid(questionDtoList.get(rndQid).getQid())
+                .questionText(questionDtoList.get(rndQid).getQuestions())
+                .aid(questionDtoList.get(rndQid).getAid())
+                .build();
+
     }
 }

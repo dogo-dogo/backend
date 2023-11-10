@@ -4,6 +4,7 @@ import com.example.tooktook.common.response.ApiResponse;
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
+import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.entity.Member;
@@ -87,5 +88,15 @@ public class QuestionController {
 
         log.info("------------QuestionController 종료 ----------------");
         return ApiResponse.ok(ResponseCode.Normal.DELETE,String.format("{%d} 이 삭제 됨",answerId));
+    }
+    @GetMapping("/rnd")
+    public ApiResponse<RandomAnswerDto> randomCategoryAndQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember){
+
+        log.info("-----------------QuestionController 시작 ---------------");
+        log.info("-------------path : /api/ques/rnd");
+        ValidMember.validCheckNull(loginMember);
+
+        RandomAnswerDto randomAnswerDto = neo4jService.randomReadCategoryAndQuestion(loginMember.getId());
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,randomAnswerDto);
     }
 }

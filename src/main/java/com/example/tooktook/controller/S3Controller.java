@@ -35,7 +35,7 @@ public class S3Controller {
     @PostMapping("/save-door-deco")
     public ApiResponse<?> saveDoorDeco(@RequestBody ImageFileDto imageFileDto,
                             @AuthenticationPrincipal MemberDetailsDto member){
-
+g
         return ApiResponse.ok(ResponseCode.Normal.SUCCESS,
                 s3Service.saveS3Url("dogo-dogo",imageFileDto,member));
     }

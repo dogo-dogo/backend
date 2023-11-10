@@ -7,6 +7,8 @@ public enum Bye2023 {
     QUESTION_4("올해 %s(이)랑 있었던 에피소드 중에 가장 기억에 남는 건 뭐야?"),
     QUESTION_5("올해 새롭게 알게 된 %s의 모습은 뭐야?"),
     QUESTION_6("올해 어떤 계절의 %s 모습이 가장 기억나는지 말해줘!"),
+    QUESTION_7("내 첫인상 어땠어?"),
+    QUESTION_8("MBTI 맞춰봐")
     ;
 
     private final String text;

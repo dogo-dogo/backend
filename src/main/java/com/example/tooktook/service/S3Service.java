@@ -1,15 +1,18 @@
 package com.example.tooktook.service;
 
-import com.amazonaws.services.ec2.model.ResponseError;
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.decoDto.ImageFileDto;
+import com.example.tooktook.model.dto.decoDto.DoorImgDto;
+import com.example.tooktook.model.dto.decoDto.GiftImgDto;
 import com.example.tooktook.model.dto.decoDto.ImageUrlDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
+import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
+import com.example.tooktook.model.repository.AnswerNeo4jRepository;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,103 +23,83 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @ResponseBody
-@Transactional
+@Transactional(readOnly = true)
+@Slf4j
 public class S3Service {
 
     private final AmazonS3 amazonS3;
 
     private final MemberNeo4jRepository memberNeo4jRepository;
+    private final AnswerNeo4jRepository answerNeo4jRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    /*
-    public S3Dto upload(MultipartFile multipartFile, String dirName) throws IOException {
-        File file = convertMultipartFileToFile(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
-
-        return upload(file, dirName);
-    }
-
-    private S3Dto upload(File file, String dirName) {
-        String key = randomFileName(file, dirName);
-        String path = putS3(file, key);
-        removeFile(file);
-
-        return S3Dto
-                .builder()
-                .key(key)
-                .path(path)
-                .build();
-    }
-
-    private String randomFileName(File file, String dirName) {
-        return dirName + "/" + UUID.randomUUID() + file.getName();
-    }
-
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-        return getS3(bucket, fileName);
-    }
-    */
-
-    public String getS3(String bucket, ImageFileDto imageFileDto) {
-        String dolorColor=imageFileDto.getDoorColor();
-        String decoration=imageFileDto.getDecoration();
-        return dolorColor;
-
-    }
-
     @Transactional
-    public ImageUrlDto saveS3Url(String bucket, ImageFileDto imageFileDto, MemberDetailsDto memberDto) {
-        ImageUrlDto imageUrlDto=new ImageUrlDto();
-
-        String dolorColor=imageFileDto.getDoorColor();
-        String decoration=imageFileDto.getDecoration();
-
-        imageUrlDto.setDoorColorUrl(amazonS3.getUrl(bucket, dolorColor).toString() + ".png");
-        imageUrlDto.setDecorationUrl(amazonS3.getUrl(bucket, decoration).toString() + ".png");
-
+    public void saveDoorS3Url(DoorImgDto doorImgDto, MemberDetailsDto memberDto) {
+        log.info("------------S3service 시작 ----------------");
         Member member = memberNeo4jRepository.findByMemberId(memberDto.getId())
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
-        member.setColor(imageUrlDto.getDoorColorUrl());
-        member.setDecorate(imageUrlDto.getDecorationUrl());
 
+        String s3Url = "";
+
+        try{
+            if(!doorImgDto.getDoorColor().isEmpty() && !doorImgDto.getDecoration().isEmpty()) {
+                s3Url = getBucketS3Url(doorImgDto);
+                member.setDoorImg(s3Url);
+            }
+        }catch (GlobalException e){
+            throw new GlobalException(ResponseCode.ErrorCode.AWS_S3_ERROR);
+        }
+        log.info("------------S3service 종료 ----------------");
         memberNeo4jRepository.save(member);
 
-        return imageUrlDto;
-
     }
+    @Transactional
+    public void saveGiftS3Url(MemberDetailsDto memberDto, GiftImgDto giftImgDto){
+        log.info("------------S3service 시작 ----------------");
+        Member member = memberNeo4jRepository.findByMemberId(memberDto.getId())
+                .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
-    public void saveDoorDeco(String memberId, ImageUrlDto imageUrlDto){
+        Answer answer = answerNeo4jRepository.findByAnswerId(giftImgDto.getAnswerId())
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
 
-    }
-
-    /*
-    private void removeFile(File file) {
-        file.delete();
-    }
-
-    public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
-
-        if (file.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(file)){
-                fos.write(multipartFile.getBytes());
+        String s3Url = "";
+        try {
+            if (!giftImgDto.getGiftColor().isEmpty() && !giftImgDto.getDecoration().isEmpty()) {
+                s3Url = getBucketS3Url(giftImgDto);
+                answer.setGiftImg(s3Url);
             }
-            return Optional.of(file);
+        }catch (GlobalException e){
+            throw new GlobalException(ResponseCode.ErrorCode.AWS_S3_ERROR);
         }
-        return Optional.empty();
+        log.info("------------S3service 종료 ----------------");
+        answerNeo4jRepository.save(answer);
     }
 
-    public void remove(S3Dto s3Dto) {
-        if (!amazonS3.doesObjectExist(bucket, s3Dto.getKey())) {
-            throw new AmazonS3Exception("Object " +s3Dto.getKey()+ " does not exist!");
-        }
-        amazonS3.deleteObject(bucket, s3Dto.getKey());
+    private String getBucketS3Url(DoorImgDto doorImgDto){
+
+
+        return amazonS3.getUrl(bucket,
+                String.format("%s_%s_%s", doorImgDto.getType(), doorImgDto.getDoorColor(), doorImgDto.getDecoration())
+                        ).toString() + ".png";
+    }
+    private String getBucketS3Url(GiftImgDto giftImgDto){
+
+        return amazonS3.getUrl(bucket,
+                String.format("%s_%s_%s", giftImgDto.getType(), giftImgDto.getGiftColor(), giftImgDto.getDecoration())
+        ).toString() + ".png";
     }
 
-     */
+    public String getS3Url(Long memberId) {
+        log.info("------------S3service 시작 ----------------");
+        Member member = memberNeo4jRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
+
+        log.info("------------S3service 종료 ----------------");
+        log.info("return Data : > {}" , member.getDoorImg());
+        return member.getDoorImg();
+    }
+
 }

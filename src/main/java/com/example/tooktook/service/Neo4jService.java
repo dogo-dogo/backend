@@ -3,18 +3,16 @@ package com.example.tooktook.service;
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
+import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
-import com.example.tooktook.model.entity.Category;
-import com.example.tooktook.model.entity.Answer;
-import com.example.tooktook.model.entity.Member;
-import com.example.tooktook.model.entity.Question;
-import com.example.tooktook.model.repository.AnswerNeo4jRepository;
-import com.example.tooktook.model.repository.CategoryNeo4jRepository;
-import com.example.tooktook.model.repository.MemberNeo4jRepository;
-import com.example.tooktook.model.repository.QuestionNeo4jRepository;
+import com.example.tooktook.model.entity.*;
+import com.example.tooktook.model.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +21,11 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class Neo4jService {
     private final MemberNeo4jRepository memberNeo4jRepository;
+    private final NotificationRepository notificationRepository;
 
     private final QuestionNeo4jRepository questionNeo4jRepository;
 
@@ -39,9 +39,10 @@ public class Neo4jService {
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
         String memberNickName = member.getNickname();
-
         if (!member.getVisit()) {
-
+            Notification notification = new Notification();
+            notification.setBeforeCnt(0);
+            member.addNotification(notification);
             for (CategoryEnum categoryEnum : CategoryEnum.values()) {
                 Category category = new Category(categoryEnum.getText());
                 member.addCategory(category);
@@ -77,13 +78,16 @@ public class Neo4jService {
             }
             member.changeVisit();
             memberNeo4jRepository.save(member);
+
         }
+        log.info("------------QuestionController Service 종료 ----------------");
+        log.info("---------return Data > memberData.getMemberID : {} ",member.getMemberId());
         return member;
 
     }
 
     @Transactional
-    public void addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
+    public Long addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
 
         // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
@@ -101,14 +105,18 @@ public class Neo4jService {
             questionNeo4jRepository.save(question);
             answerNeo4jRepository.save(answer);
 
+            return answer.getAnswerId();
+
 //            return "답변이 추가되었습니다.";
         } else {
+            log.error("답변 추가 에러 path : addAnswerToQuestion()");
             throw new GlobalException(ResponseCode.ErrorCode.NOT_FIND_QUESTION_ID);
         }
     }
 
     public List<CategoryListDto> getAllCategoryCount(String loginMember) {
 
+        log.info("------------QuestionService 시작 ----------------");
         Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
@@ -120,18 +128,34 @@ public class Neo4jService {
         int totalSize = categoryListDtoList.stream()
                 .mapToInt(CategoryListDto::getAnswerCount)
                 .sum();
+
         categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
+
+        log.info("------------QuestionController 종료 ----------------");
 
         return categoryListDtoList;
     }
 
+
+
     public List<QuestionDto> getCategoryToQuestion(String loginMember, Long cid) {
+        log.info("------------QuestionService 시작 ----------------");
         Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
+        log.info("------------QuestionService 종료 ----------------");
         return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
 
+    }
+    public List<QuestionAllDto> getAllCategoryToQuestions(String loginMember ){
+        log.info("------------QuestionService 시작 ----------------");
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getMemberId();
+
+        log.info("------------QuestionService 종료 ----------------");
+        return questionNeo4jRepository.findByAllAnswers(memberId);
     }
 
     @Transactional
@@ -143,6 +167,54 @@ public class Neo4jService {
         Answer answer = answerNeo4jRepository.findById(answerId)
                 .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
 
+        Notification notification = notificationRepository.findByNotification(memberId);
+        notification.setBeforeCnt(notification.getBeforeCnt()-1);
+
+        notificationRepository.save(notification);
         answerNeo4jRepository.delete(answer);
+    }
+
+
+    public RandomAnswerDto randomReadCategoryAndQuestion(Long memberId) {
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        List<QuestionDto> questionDtoList = new ArrayList<>();
+        Random rnd = new Random();
+
+        log.info("--------- random service Start ------------");
+        categoryDtoList = questionNeo4jRepository.findQuestionsByMemberId(memberId);
+        // [1,2,3,4,5]
+
+        log.info("-------------categoryDtoList size :  {} ------- ",categoryDtoList.size());
+
+        int rndCid = Math.toIntExact(
+                categoryDtoList.get(
+                        rnd.nextInt(categoryDtoList.size())
+                ).getCategoryId());
+
+        //random cid : [3]
+        log.info("--------------categoryDtoList random idx : {} " , rndCid);
+        questionDtoList = questionNeo4jRepository.findCategoryIdToQuestion(memberId, Long.valueOf(rndCid));
+        // 카테고리가 랜덤 3번인 질문들을 조회  [5,6,7,8,9]
+
+        int rndQid = Math.toIntExact(
+                questionDtoList.get(
+                        rnd.nextInt(questionDtoList.size())
+                ).getQid());
+
+        // random qid : [8]
+
+        log.info("-------------questionDtoList size :  {} ------- ",categoryDtoList.get(rndCid).getCategoryName());
+        log.info("-------------questionDtoList qid :  {} ------- ",questionDtoList.get(rndQid).getQid());
+        log.info("-------------questionDtoList ques :  {} ------- ",questionDtoList.get(rndQid).getQuestions());
+        log.info("-------------questionDtoList aid :  {} ------- ",questionDtoList.get(rndQid).getAid());
+
+        return RandomAnswerDto.builder()
+                .rndId(rndCid)
+                .categoryText(categoryDtoList.get(rndCid).getCategoryName())
+                .qid(questionDtoList.get(rndQid).getQid())
+                .questionText(questionDtoList.get(rndQid).getQuestions())
+                .aid(questionDtoList.get(rndQid).getAid())
+                .build();
+
     }
 }

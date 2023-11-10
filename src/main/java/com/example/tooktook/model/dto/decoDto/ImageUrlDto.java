@@ -1,12 +1,17 @@
 package com.example.tooktook.model.dto.decoDto;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 public class ImageUrlDto {
-    private String doorColorUrl;
-    private String decorationUrl;
+    private String doorUrl;
+    private String giftUrl;
+
+    @Builder
+    public ImageUrlDto(String doorUrl, String giftUrl) {
+        this.doorUrl = doorUrl;
+        this.giftUrl = giftUrl;
+    }
 }

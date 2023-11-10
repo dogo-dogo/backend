@@ -25,6 +25,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final KakaoService kakaoService;
 
     private static final String[] PERMIT_URL_ARRAY = {
+            "/api/auth/kakao",
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -34,7 +35,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/swagger-ui",
             "/webjars/**",
             "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+
     };
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

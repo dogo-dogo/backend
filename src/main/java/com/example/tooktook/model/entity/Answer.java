@@ -17,6 +17,11 @@ public class Answer{
     private String mainText;
     private String optionalText;
     private LocalDateTime createdAt;
+    private String giftImg;
+
+    public void setGiftImg(String giftImg) {
+        this.giftImg = giftImg;
+    }
 
     public void setMainText(String mainText) {
 

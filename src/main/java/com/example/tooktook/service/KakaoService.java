@@ -32,6 +32,7 @@ public class KakaoService {
 
     public AuthTokens login(OAuthLoginParams kakaoAccessCode, HttpServletResponse response) {
 
+        log.info("------------kakaoService  login 시작---------------");
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(kakaoAccessCode);
         String memberEmail = findOrCreateMember(oAuthInfoResponse);
         log.info("login memberId (login)  :: " + memberEmail);
@@ -58,8 +59,7 @@ public class KakaoService {
                 .gender(oAuthInfoResponse.getGender())
                 .visit(Boolean.FALSE)
                 .role(MemberRole.KAKAO)
-                .color("default")
-                .decorate("default")
+                .doorImg("default")
                 .build();
         log.error("newMember :: " + member.getMemberId());
         memberNeo4jRepository.save(member);

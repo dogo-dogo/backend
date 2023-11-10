@@ -26,14 +26,9 @@ public class Member{
     @Column(columnDefinition = "NVARCHAR(30) NOT NULL")
 
     private String nickname;
-    @Column(columnDefinition = "NVARCHAR(10)")
-    private String gender;
-    @Column(columnDefinition = "NVARCHAR(20)")
-    private String color;
 
-
-    @Column(columnDefinition = "NVARCHAR(255)")
-    private String decorate;
+    @Column(columnDefinition = "TEXT")
+    private String doorImg;
 
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
@@ -41,15 +36,18 @@ public class Member{
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    public void setDoorImg(String doorImg) {
+        this.doorImg = doorImg;
+    }
+
     @Builder
-    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role,String color,String decorate ){
+    public Member (String loginEmail, String nickname, String gender,
+                   Boolean visit, MemberRole role,String color,String decorate,String doorImg ){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
-        this.gender = gender;
         this.visit = visit;
         this.role = role;
-        this.color=color;
-        this.decorate=decorate;
+        this.doorImg = doorImg;
     }
 
     public void changeVisit(){
@@ -59,20 +57,18 @@ public class Member{
         this.nickname = nickname;
     }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public void setDecorate(String decorate) {
-        this.decorate = decorate;
-    }
-
     @Relationship(type = "CATEGORY")
     private List<Category> categories = new ArrayList<>();
+
+    @Relationship(type = "NOTIFICATION")
+    private List<Notification> notifications = new ArrayList<>();
 
 
     public void addCategory(Category category) {
         categories.add(category);
+    }
+    public void addNotification(Notification notification){
+        notifications.add(notification);
     }
 
 }

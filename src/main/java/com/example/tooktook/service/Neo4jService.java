@@ -80,7 +80,7 @@ public class Neo4jService {
     }
 
     @Transactional
-    public void addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
+    public Long addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
 
         // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
@@ -98,6 +98,7 @@ public class Neo4jService {
             questionNeo4jRepository.save(question);
             answerNeo4jRepository.save(answer);
 
+            return answer.getAnswerId();
 //            return "답변이 추가되었습니다.";
         } else {
             throw new GlobalException(ResponseCode.ErrorCode.NOT_FIND_QUESTION_ID);
@@ -148,5 +149,13 @@ public class Neo4jService {
 
         notificationRepository.save(notification);
         answerNeo4jRepository.delete(answer);
+    }
+
+    public List<Question> getAllCategoryToQuestions(String loginMember) {
+        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getMemberId();
+
+        return questionNeo4jRepository.findByAllAnswers(memberId);
     }
 }

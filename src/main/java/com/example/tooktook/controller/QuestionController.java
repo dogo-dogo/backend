@@ -34,20 +34,26 @@ public class QuestionController {
     @PostMapping("/{questionId}/answers")
     public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
 
-        neo4jService.addAnswerToQuestion(questionId,answerdto);
-        return ApiResponse.ok(ResponseCode.Normal.CREATE,
-                String.format("추가한 questionId > {%d} ", questionId));
+        Long answerId = neo4jService.addAnswerToQuestion(questionId,answerdto);
+
+        return ApiResponse.ok(ResponseCode.Normal.CREATE,answerId);
 
     }
     @GetMapping("/find/category")
     public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
+
         ValidMember.validCheckNull(loginMember);
+
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
                 neo4jService.getAllCategoryCount(loginMember.getUsername()));
     }
-    @GetMapping("/find/question")
-    public ApiResponse<List<QuestionDto>> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
+    @GetMapping("/find/question/{cid}")
+    public ApiResponse<List<?>> getCategoryToQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long cid){
         ValidMember.validCheckNull(loginMember);
+        if(cid==null){
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
+                neo4jService.getAllCategoryToQuestions(loginMember.getUsername()));
+        }
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
                 neo4jService.getCategoryToQuestion(loginMember.getUsername(),cid));
     }
@@ -57,4 +63,5 @@ public class QuestionController {
         neo4jService.deleteToAnswerId(loginMember.getUsername(),answerId);
         return ApiResponse.ok(ResponseCode.Normal.DELETE,String.format("{%d} 이 삭제 됨",answerId));
     }
+
 }

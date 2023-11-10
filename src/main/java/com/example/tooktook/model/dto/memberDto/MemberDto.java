@@ -20,7 +20,7 @@ public class MemberDto {
                 .nickname(member.getNickname())
                 .loginEmail(member.getLoginEmail())
                 .doorImg(member.getDoorImg())
-                .giftImg(member.getGiftImg())
+
                 .build();
     }
 }

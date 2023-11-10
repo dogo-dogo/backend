@@ -2,15 +2,12 @@ package com.example.tooktook.controller;
 
 import com.example.tooktook.common.response.ApiResponse;
 import com.example.tooktook.common.response.ResponseCode;
-import com.example.tooktook.model.dto.decoDto.ImageFileDto;
+import com.example.tooktook.model.dto.decoDto.DoorImgDto;
+import com.example.tooktook.model.dto.decoDto.GiftImgDto;
 import com.example.tooktook.model.dto.decoDto.ImageUrlDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
-import com.example.tooktook.model.repository.MemberNeo4jRepository;
-import com.example.tooktook.service.MemberService;
 import com.example.tooktook.service.S3Service;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +20,24 @@ public class S3Controller {
 
 
     @PostMapping("/save-door-img")
-    public ApiResponse<?> saveDoorDeco(@RequestBody ImageFileDto imageFileDto,
+    public ApiResponse<?> saveDoorDeco(@RequestBody DoorImgDto doorImgDto,
                             @AuthenticationPrincipal MemberDetailsDto member){
 
-        s3Service.saveS3Url(imageFileDto,member);
+        s3Service.saveDoorS3Url(doorImgDto,member);
         return ApiResponse.ok(ResponseCode.Normal.SUCCESS,String.format("%s님의 img 설정",member.getNickName()));
     }
 
     @GetMapping("/get-img")
-    public ApiResponse<ImageUrlDto> getDoorImg(@AuthenticationPrincipal MemberDetailsDto member){
+    public ApiResponse<String> getDoorImg(@AuthenticationPrincipal MemberDetailsDto member){
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,s3Service.getS3Url(member.getId()));
     }
+
+    @PostMapping("/save-gift-img")
+    public ApiResponse<?> saveGiftImg(@AuthenticationPrincipal MemberDetailsDto member,@RequestBody GiftImgDto giftImgDto){
+        s3Service.saveGiftS3Url(member,giftImgDto);
+        return ApiResponse.ok(ResponseCode.Normal.CREATE,String.format("%s님의 Gift img 설정",member.getNickName()));
+    }
+
 
 
 }

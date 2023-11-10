@@ -1,7 +1,9 @@
 package com.example.tooktook.model.repository;
 
+import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
+import com.example.tooktook.model.dto.decoDto.GiftImgDto;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Notification;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -9,6 +11,7 @@ import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnswerNeo4jRepository extends Neo4jRepository<Answer, Long> {
     @Query("MATCH(M:Member)-[:CATEGORY]->(C:Category)-[:ASKS]->(Q:Question)-[:HAS_ANSWER]->(A:Answer) " +
@@ -23,4 +26,10 @@ public interface AnswerNeo4jRepository extends Neo4jRepository<Answer, Long> {
     int countByMemberId(@Param("memberId") Long memberId);
 
 
+    Optional <Answer> findByAnswerId(Long answerId);
+
+    @Query("MATCH(m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer)" +
+            "WHERE id(m) = $memberId and id(a) = $answerId " +
+            "RETURN id(a) as answerId, a.giftImg as giftImg , a.mainText as mainText , a.optionalText as optionalText")
+    AnswerDAO findByAnswersDetails(@Param("memberId") Long memberId, @Param("answerId") Long answerId);
 }

@@ -17,6 +17,7 @@ public class Answer{
     private String mainText;
     private String optionalText;
     private LocalDateTime createdAt;
+    private String giftImg;
 
     public void setMainText(String mainText) {
 
@@ -29,6 +30,10 @@ public class Answer{
     }
     public void setCreatedAt(LocalDateTime createdAt){
         this.createdAt = createdAt;
+    }
+
+    public void setGiftImg(String giftImg){
+        this.giftImg=giftImg;
     }
 
 }

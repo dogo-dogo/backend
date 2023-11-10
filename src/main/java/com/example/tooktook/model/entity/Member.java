@@ -29,8 +29,6 @@ public class Member{
 
     @Column(columnDefinition = "TEXT")
     private String doorImg;
-    @Column(columnDefinition = "TEXT")
-    private String giftImg;
 
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
@@ -42,19 +40,17 @@ public class Member{
         this.doorImg = doorImg;
     }
 
-    public void setGiftImg(String giftImg) {
-        this.giftImg = giftImg;
-    }
+
 
     @Builder
     public Member (String loginEmail, String nickname, String gender,
-                   Boolean visit, MemberRole role,String color,String decorate,String doorImg,String giftImg ){
+                   Boolean visit, MemberRole role,String color,String decorate,String doorImg ){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
         this.visit = visit;
         this.role = role;
         this.doorImg = doorImg;
-        this.giftImg = giftImg;
+
     }
 
     public void changeVisit(){

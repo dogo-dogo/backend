@@ -2,6 +2,7 @@ package com.example.tooktook.service;
 
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
+import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
@@ -26,6 +27,7 @@ public class AnswerService {
 
     private final AnswerNeo4jRepository answerNeo4jRepository;
     private final NotificationRepository notificationRepository;
+    public AnswerDAO getAnswerDetails;
 
     public AnswerPageDto getAnswersByCategory(Pageable pageable, MemberDetailsDto member) {
         int curPage = pageable.getPageNumber()-1;
@@ -77,5 +79,11 @@ public class AnswerService {
             notificationRepository.save(notification);
             return afterCnt - BeforeCnt;
         }
+    }
+    public AnswerDAO getGetAnswerDetails(MemberDetailsDto member,Long answerId){
+
+        answerNeo4jRepository.findByAnswerId(answerId)
+                .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
+        return answerNeo4jRepository.findByAnswersDetails(member.getId(),answerId);
     }
 }

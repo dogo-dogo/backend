@@ -9,6 +9,7 @@ import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
+import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
 import com.example.tooktook.model.entity.*;
 import com.example.tooktook.model.repository.*;
@@ -238,12 +239,9 @@ public class Neo4jService {
 
     }
 
-    public List<QuestionRndDto> otherCategoryAndQuestion(Long memberId, Long rndCid){
+    public QuestionOtherDto otherCategoryAndQuestion(Long memberId, Long rndCid){
         List<QuestionRndDto> questionDtoList = new ArrayList<>();
         List<CategoryDto> categoryDtoList = new ArrayList<>();
-
-        log.info("--------- Other service Start ------------");
-
         int currIdxCid = 0;
 
         questionDtoList = questionNeo4jRepository.findCategoryIdToRandomQuestion(memberId,rndCid);
@@ -257,15 +255,12 @@ public class Neo4jService {
             }
         }
 
-        QuestionRndDto addCategoryName = new QuestionRndDto();
-        addCategoryName.setQuestions(categoryDtoList.get(currIdxCid).getCategoryName());
-        addCategoryName.setQid(0L);
+        QuestionOtherDto questionOtherDto = QuestionOtherDto.builder()
+                .others(questionDtoList)
+                .CategoryName(categoryDtoList.get(currIdxCid).getCategoryName())
+                .build();
 
-        questionDtoList.add(addCategoryName);
-
-        log.info("--------- Other service 종료 ------------");
-
-        return questionDtoList;
+        return questionOtherDto;
 
     }
 }

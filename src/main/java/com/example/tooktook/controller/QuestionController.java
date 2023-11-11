@@ -7,6 +7,7 @@ import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
+import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
 import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Question;
@@ -107,7 +108,7 @@ public class QuestionController {
         log.info("-------------path : /api/other/question");
         ValidMember.validCheckNull(loginMember);
 
-        List<QuestionRndDto> questionLst = neo4jService.otherCategoryAndQuestion(loginMember.getId(), rndCid);
+        QuestionOtherDto questionLst = neo4jService.otherCategoryAndQuestion(loginMember.getId(), rndCid);
 
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,questionLst);
     }

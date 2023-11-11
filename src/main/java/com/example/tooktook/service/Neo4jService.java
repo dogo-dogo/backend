@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +38,7 @@ public class Neo4jService {
 
         Member member = memberNeo4jRepository.findByLoginEmail(memberEmail)
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
+
 
         String memberNickName = member.getNickname();
         if (!member.getVisit()) {
@@ -235,6 +235,14 @@ public class Neo4jService {
                 .qid(questionDtoList.get(currIdxQid).getQid())
                 .questionText(questionDtoList.get(currIdxQid).getQuestions())
                 .build();
+
+    }
+
+    public List<QuestionRndDto> otherCategoryAndQuestion(Long memberId, Long rndCid){
+        List<QuestionRndDto> questionDtoList = new ArrayList<>();
+        questionDtoList = questionNeo4jRepository.findCategoryIdToRandomQuestion(memberId,rndCid);
+
+        return questionDtoList;
 
     }
 }

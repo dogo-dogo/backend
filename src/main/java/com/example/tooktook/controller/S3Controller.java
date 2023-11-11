@@ -48,34 +48,18 @@ public class S3Controller {
         return ApiResponse.ok(ResponseCode.Normal.CREATE,String.format("%s님의 Gift img 설정",member.getNickName()));
     }
 
-    @PostMapping("/send-door-details")
+    @GetMapping("/send-door-details")
     public DoorSendDto sendDoorDetails(){
 
-        Color red= new Color("#EA383F","red");
-        Color green = new Color ("#009456", "green");
-        Color white = new Color ("#F5F5F5", "white");
-        Color brown = new Color("#905700", "brown");
-
-        Deco bells = new Deco("벨주소", "01");
-        Deco hat = new Deco("모자주소", "02");
-        Deco ginger = new Deco("진저주소", "03");
-        Deco whitereath= new Deco("화이트리스주소", "04");
-        Deco redwreath = new Deco("레드리스주소", "05");
-
-        ArrayList<Color> color=new ArrayList<>();
-        ArrayList<Deco> deco=new ArrayList<>();
-        color.add(red);
-        color.add(green);
-        color.add(white);
-        color.add(brown);
-        deco.add(bells);
-        deco.add(hat);
-        deco.add(ginger);
-        deco.add(whitereath);
-        deco.add(redwreath);
-
-        DoorSendDto doorSendDto= new DoorSendDto(color,deco);
+        DoorSendDto doorSendDto= new DoorSendDto(s3Service.putDoorColor(),s3Service.putDoorDeco());
         return doorSendDto;
+    }
+
+    @GetMapping("/send-gift-details")
+    public GiftSendDto sendGiftDetails(){
+
+        GiftSendDto giftSendDto=new GiftSendDto(s3Service.putGiftColor(),s3Service.putRibbonColor());
+        return giftSendDto;
     }
 
 

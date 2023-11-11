@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Color {
-    private String color;
+public class DoorDecoDto {
+    private String deco;
     private String key;
-
 }

@@ -3,9 +3,7 @@ package com.example.tooktook.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
-import com.example.tooktook.model.dto.decoDto.DoorImgDto;
-import com.example.tooktook.model.dto.decoDto.GiftImgDto;
-import com.example.tooktook.model.dto.decoDto.ImageUrlDto;
+import com.example.tooktook.model.dto.decoDto.*;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.entity.Answer;
 import com.example.tooktook.model.entity.Member;
@@ -18,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -100,6 +98,79 @@ public class S3Service {
         log.info("------------S3service 종료 ----------------");
         log.info("return Data : > {}" , member.getDoorImg());
         return member.getDoorImg();
+    }
+
+    public ArrayList<DoorColorDto> putDoorColor(){
+
+
+        DoorColorDto red= new DoorColorDto("#EA383F","red");
+        DoorColorDto green = new DoorColorDto("#009456", "green");
+        DoorColorDto white = new DoorColorDto("#F5F5F5", "white");
+        DoorColorDto brown = new DoorColorDto("#905700", "brown");
+        ArrayList<DoorColorDto> doorColorDto =new ArrayList<>();
+        doorColorDto.add(red);
+        doorColorDto.add(green);
+        doorColorDto.add(white);
+        doorColorDto.add(brown);
+        return doorColorDto;
+
+    }
+
+
+    public ArrayList<GiftColorDto> putGiftColor() {
+
+        GiftColorDto green = new GiftColorDto("006B2B", "green");
+        GiftColorDto yellow = new GiftColorDto("D0C77D", "yellow");
+        GiftColorDto red = new GiftColorDto("AA0000", "red");
+        GiftColorDto pink = new GiftColorDto("F89C9C", "pink");
+        GiftColorDto skyblue = new GiftColorDto("B4C4FF", "skyblue");
+
+
+        ArrayList<GiftColorDto> giftColorDto = new ArrayList<>();
+        giftColorDto.add(green);
+        giftColorDto.add(yellow);
+        giftColorDto.add(red);
+        giftColorDto.add(pink);
+        giftColorDto.add(skyblue);
+        return giftColorDto;
+
+    }
+    public ArrayList<RibbonColorDto> putRibbonColor(){
+
+        RibbonColorDto green = new RibbonColorDto("00A83F","green");
+        RibbonColorDto red = new RibbonColorDto("E00000","red");
+        RibbonColorDto white = new RibbonColorDto("C5C5C5","white");
+
+
+        ArrayList<RibbonColorDto> ribbonColorDto =new ArrayList<>();
+        ribbonColorDto.add(green);
+        ribbonColorDto.add(red);
+        ribbonColorDto.add(white);
+        return ribbonColorDto;
+
+    }
+
+
+
+
+    public ArrayList<DoorDecoDto> putDoorDeco(){
+
+        ArrayList<DoorDecoDto> doorDecoDto =new ArrayList<>();
+
+        for (int num=1; num<6; num++){
+            String decoKey="0"+ num;
+            DoorDecoDto decoration= new DoorDecoDto(getBucketS3Url(decoKey),decoKey);
+            doorDecoDto.add(decoration);
+        }
+
+
+        return doorDecoDto;
+    }
+
+    private String getBucketS3Url(String decoKey){
+
+        return amazonS3.getUrl(bucket, decoKey) + ".png";
+
     }
 
 }

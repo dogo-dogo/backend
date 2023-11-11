@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 @Data
 @AllArgsConstructor
-public class DoorSendDto {
-    private ArrayList<DoorColorDto> doorColorDto;
-    private ArrayList<DoorDecoDto> doorDecoDto;
-
-
+public class GiftSendDto {
+    private ArrayList<GiftColorDto> giftColorDto;
+    private ArrayList<RibbonColorDto> ribbonColorDto;
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -180,7 +181,8 @@ public class Neo4jService {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<QuestionRndDto> questionDtoList = new ArrayList<>();
         Random rnd = new Random();
-
+        int currIdxCid = 0;
+        int currIdxQid = 0;
         log.info("--------- random service Start ------------");
         categoryDtoList = questionNeo4jRepository.findQuestionsByMemberId(memberId);
         // [1,2,3,4,5]
@@ -192,7 +194,14 @@ public class Neo4jService {
                         rnd.nextInt(categoryDtoList.size())
                 ).getCategoryId());
 
-        int currIdxCid = categoryDtoList.indexOf(rndCid);
+        for(int i =0; i<categoryDtoList.size(); i++){
+            if(categoryDtoList.get(i).getCategoryId() == rndCid){
+                currIdxCid = i;
+                break;
+            }
+        }
+
+
         //random cid : [3]
         log.info("--------------categoryDtoList random idx : {} " , rndCid);
         log.info("--------------categoryDtoList random currIdxCid : {} " , currIdxCid);
@@ -204,7 +213,13 @@ public class Neo4jService {
                         rnd.nextInt(questionDtoList.size())
                 ).getQid());
 
-        int currIdxQid = questionDtoList.indexOf(rndQid);
+
+        for(int i =0; i<questionDtoList.size(); i++){
+            if(questionDtoList.get(i).getQid() == rndQid){
+                currIdxQid = i;
+                break;
+            }
+        }
         // random qid : [8]
 
 

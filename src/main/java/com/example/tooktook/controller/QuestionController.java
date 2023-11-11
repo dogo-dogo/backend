@@ -101,13 +101,14 @@ public class QuestionController {
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,randomAnswerDto);
     }
     @GetMapping("/other/question")
-    public ApiResponse<List<QuestionRndDto>> otherCategoryAndQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long rndCid){
+    public ApiResponse<?> otherCategoryAndQuestion(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long rndCid){
 
         log.info("-----------------QuestionController 시작 ---------------");
         log.info("-------------path : /api/other/question");
         ValidMember.validCheckNull(loginMember);
 
         List<QuestionRndDto> questionLst = neo4jService.otherCategoryAndQuestion(loginMember.getId(), rndCid);
+
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,questionLst);
     }
 }

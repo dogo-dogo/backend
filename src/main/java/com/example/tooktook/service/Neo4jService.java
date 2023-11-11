@@ -240,7 +240,30 @@ public class Neo4jService {
 
     public List<QuestionRndDto> otherCategoryAndQuestion(Long memberId, Long rndCid){
         List<QuestionRndDto> questionDtoList = new ArrayList<>();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+
+        log.info("--------- Other service Start ------------");
+
+        int currIdxCid = 0;
+
         questionDtoList = questionNeo4jRepository.findCategoryIdToRandomQuestion(memberId,rndCid);
+
+        categoryDtoList = questionNeo4jRepository.findQuestionsByMemberId(memberId);
+
+        for(int i =0; i<categoryDtoList.size(); i++){
+            if(categoryDtoList.get(i).getCategoryId() == rndCid){
+                currIdxCid = i;
+                break;
+            }
+        }
+
+        QuestionRndDto addCategoryName = new QuestionRndDto();
+        addCategoryName.setQuestions(categoryDtoList.get(currIdxCid).getCategoryName());
+        addCategoryName.setQid(0L);
+
+        questionDtoList.add(addCategoryName);
+
+        log.info("--------- Other service 종료 ------------");
 
         return questionDtoList;
 

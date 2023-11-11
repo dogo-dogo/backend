@@ -193,7 +193,7 @@ public class Neo4jService {
 
         //random cid : [3]
         log.info("--------------categoryDtoList random idx : {} " , rndCid);
-        questionDtoList = questionNeo4jRepository.findCategoryIdToQuestion(memberId, Long.valueOf(rndCid));
+        questionDtoList = questionNeo4jRepository.findCategoryIdToRandomQuestion(memberId, Long.valueOf(rndCid));
         // 카테고리가 랜덤 3번인 질문들을 조회  [5,6,7,8,9]
 
         int rndQid = Math.toIntExact(
@@ -203,17 +203,15 @@ public class Neo4jService {
 
         // random qid : [8]
 
-        log.info("-------------questionDtoList size :  {} ------- ",categoryDtoList.get(rndCid).getCategoryName());
+        log.info("-------------categoryDtoList size :  {} ------- ",categoryDtoList.get(rndCid).getCategoryName());
         log.info("-------------questionDtoList qid :  {} ------- ",questionDtoList.get(rndQid).getQid());
         log.info("-------------questionDtoList ques :  {} ------- ",questionDtoList.get(rndQid).getQuestions());
-        log.info("-------------questionDtoList aid :  {} ------- ",questionDtoList.get(rndQid).getAid());
 
         return RandomAnswerDto.builder()
                 .rndId(rndCid)
                 .categoryText(categoryDtoList.get(rndCid).getCategoryName())
                 .qid(questionDtoList.get(rndQid).getQid())
                 .questionText(questionDtoList.get(rndQid).getQuestions())
-                .aid(questionDtoList.get(rndQid).getAid())
                 .build();
 
     }

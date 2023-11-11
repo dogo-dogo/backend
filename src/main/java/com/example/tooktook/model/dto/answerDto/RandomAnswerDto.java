@@ -18,6 +18,5 @@ public class RandomAnswerDto {
     private String categoryText;
     private Long qid;
     private String questionText;
-    private Long aid;
 
 }

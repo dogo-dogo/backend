@@ -23,7 +23,7 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)" +
             " WHERE id(m) = $memberId and id(c)=$cid" +
-            " RETURN id(q) as qid , q.text as questions, id(a) as aid")
+            " RETURN id(q) as qid , q.text as questions")
     List<QuestionDto> findCategoryIdToRandomQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +

@@ -8,7 +8,7 @@ import java.util.List;
 public class QuestionAllDto {
 
     private Long qid;
-    private String text;
+    private String questions;
     private List<Long> answerIds;
 }
 

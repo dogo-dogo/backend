@@ -9,6 +9,7 @@ import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
+import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
 import com.example.tooktook.model.entity.*;
 import com.example.tooktook.model.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -177,7 +178,7 @@ public class Neo4jService {
 
     public RandomAnswerDto randomReadCategoryAndQuestion(Long memberId) {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
-        List<QuestionDto> questionDtoList = new ArrayList<>();
+        List<QuestionRndDto> questionDtoList = new ArrayList<>();
         Random rnd = new Random();
 
         log.info("--------- random service Start ------------");
@@ -191,8 +192,10 @@ public class Neo4jService {
                         rnd.nextInt(categoryDtoList.size())
                 ).getCategoryId());
 
+        int currIdxCid = categoryDtoList.indexOf(rndCid);
         //random cid : [3]
         log.info("--------------categoryDtoList random idx : {} " , rndCid);
+        log.info("--------------categoryDtoList random currIdxCid : {} " , currIdxCid);
         questionDtoList = questionNeo4jRepository.findCategoryIdToRandomQuestion(memberId, Long.valueOf(rndCid));
         // 카테고리가 랜덤 3번인 질문들을 조회  [5,6,7,8,9]
 
@@ -201,17 +204,21 @@ public class Neo4jService {
                         rnd.nextInt(questionDtoList.size())
                 ).getQid());
 
+        int currIdxQid = questionDtoList.indexOf(rndQid);
         // random qid : [8]
 
-        log.info("-------------categoryDtoList size :  {} ------- ",categoryDtoList.get(rndCid).getCategoryName());
-        log.info("-------------questionDtoList qid :  {} ------- ",questionDtoList.get(rndQid).getQid());
-        log.info("-------------questionDtoList ques :  {} ------- ",questionDtoList.get(rndQid).getQuestions());
+
+        log.info("--------------categoryDtoList random currIdxCid : {} " , currIdxCid);
+        log.info("--------------questionDtoList random currIdx : {} " , currIdxQid);
+        log.info("-------------categoryDtoList size :  {} ------- ",categoryDtoList.get(currIdxCid).getCategoryName());
+        log.info("-------------questionDtoList qid :  {} ------- ",questionDtoList.get(currIdxQid).getQid());
+        log.info("-------------questionDtoList ques :  {} ------- ",questionDtoList.get(currIdxQid).getQuestions());
 
         return RandomAnswerDto.builder()
                 .rndId(rndCid)
-                .categoryText(categoryDtoList.get(rndCid).getCategoryName())
-                .qid(questionDtoList.get(rndQid).getQid())
-                .questionText(questionDtoList.get(rndQid).getQuestions())
+                .categoryText(categoryDtoList.get(currIdxCid).getCategoryName())
+                .qid(questionDtoList.get(currIdxQid).getQid())
+                .questionText(questionDtoList.get(currIdxQid).getQuestions())
                 .build();
 
     }

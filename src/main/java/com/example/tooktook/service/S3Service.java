@@ -127,9 +127,9 @@ public class S3Service {
 
 
         ArrayList<GiftColorDto> giftColorDto = new ArrayList<>();
+        giftColorDto.add(red);
         giftColorDto.add(green);
         giftColorDto.add(yellow);
-        giftColorDto.add(red);
         giftColorDto.add(pink);
         giftColorDto.add(skyblue);
         return giftColorDto;
@@ -143,9 +143,9 @@ public class S3Service {
 
 
         ArrayList<RibbonColorDto> ribbonColorDto =new ArrayList<>();
-        ribbonColorDto.add(green);
-        ribbonColorDto.add(red);
         ribbonColorDto.add(white);
+        ribbonColorDto.add(red);
+        ribbonColorDto.add(green);
         return ribbonColorDto;
 
     }

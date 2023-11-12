@@ -58,6 +58,8 @@ public class AnswerController {
         log.info("------------answerController 시작 ----------------");
         log.info("--------------path : /api/answers/details ---------------");
         log.info("-------------------requestParm : {} ", answerId);
-        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getAnswerDetails(member,answerId));
+
+
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getAnswerDetails(member.getId(),answerId));
     }
 }

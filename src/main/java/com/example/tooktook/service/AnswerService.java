@@ -84,12 +84,12 @@ public class AnswerService {
         }
     }
 
-    public AnswerDAO getAnswerDetails(MemberDetailsDto member, Long answerId) {
+    public AnswerDAO getAnswerDetails(Long memberId, Long answerId) {
 
         answerNeo4jRepository.findByAnswerId(answerId)
                 .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
 
         log.info("------------answerController > Service 종료 ----------------");
-        return answerNeo4jRepository.findByAnswersDetails(member.getId(),answerId);
+        return answerNeo4jRepository.findByAnswersDetails(memberId,answerId);
     }
 }

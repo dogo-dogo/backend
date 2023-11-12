@@ -62,7 +62,7 @@ public class QuestionController {
 
         ValidMember.validCheckNull(loginMember);
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
-                neo4jService.getAllCategoryCount(loginMember.getUsername()));
+                neo4jService.getAllCategoryCount(loginMember.getId()));
     }
 
     @GetMapping("/find/question")
@@ -73,10 +73,10 @@ public class QuestionController {
         ValidMember.validCheckNull(loginMember);
         if(cid == 99999){
             return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
-                    neo4jService.getAllCategoryToQuestions(loginMember.getUsername()));
+                    neo4jService.getAllCategoryToQuestions(loginMember.getId()));
         }else{
             return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,
-                    neo4jService.getCategoryToQuestion(loginMember.getUsername(),cid));
+                    neo4jService.getCategoryToQuestion(loginMember.getId(),cid));
         }
     }
 
@@ -112,4 +112,5 @@ public class QuestionController {
 
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,questionLst);
     }
+
 }

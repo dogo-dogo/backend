@@ -117,15 +117,15 @@ public class Neo4jService {
         }
     }
 
-    public List<CategoryListDto> getAllCategoryCount(String loginMember) {
+    public List<CategoryListDto> getAllCategoryCount(Long loginMember) {
 
         log.info("------------QuestionService 시작 ----------------");
-        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+        Long memberIds = memberNeo4jRepository.findByMemberId(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
 
-        List<CategoryListDto> categoryListDtoList = categoryNeo4jRepository.findCategoryByCount(memberId);
+        List<CategoryListDto> categoryListDtoList = categoryNeo4jRepository.findCategoryByCount(memberIds);
 
 
         int totalSize = categoryListDtoList.stream()
@@ -141,24 +141,24 @@ public class Neo4jService {
 
 
 
-    public List<QuestionDto> getCategoryToQuestion(String loginMember, Long cid) {
+    public List<QuestionDto> getCategoryToQuestion(Long loginMember, Long cid) {
         log.info("------------QuestionService 시작 ----------------");
-        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+        Long memberIds = memberNeo4jRepository.findByMemberId(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
         log.info("------------QuestionService 종료 ----------------");
-        return questionNeo4jRepository.findCategoryIdToQuestion(memberId,cid);
+        return questionNeo4jRepository.findCategoryIdToQuestion(memberIds,cid);
 
     }
-    public List<QuestionAllDto> getAllCategoryToQuestions(String loginMember ){
+    public List<QuestionAllDto> getAllCategoryToQuestions(Long loginMember ){
         log.info("------------QuestionService 시작 ----------------");
-        Long memberId = memberNeo4jRepository.findByLoginEmail(loginMember)
+        Long memberIds = memberNeo4jRepository.findByMemberId(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
                 .getMemberId();
 
         log.info("------------QuestionService 종료 ----------------");
-        return questionNeo4jRepository.findByAllAnswers(memberId);
+        return questionNeo4jRepository.findByAllAnswers(memberIds);
     }
 
     @Transactional
@@ -179,6 +179,7 @@ public class Neo4jService {
 
 
     public RandomAnswerDto randomReadCategoryAndQuestion(Long memberId) {
+
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<QuestionRndDto> questionDtoList = new ArrayList<>();
         Random rnd = new Random();

@@ -119,11 +119,11 @@ public class S3Service {
 
     public ArrayList<GiftColorDto> putGiftColor() {
 
-        GiftColorDto green = new GiftColorDto("006B2B", "green");
-        GiftColorDto yellow = new GiftColorDto("D0C77D", "yellow");
-        GiftColorDto red = new GiftColorDto("AA0000", "red");
-        GiftColorDto pink = new GiftColorDto("F89C9C", "pink");
-        GiftColorDto skyblue = new GiftColorDto("B4C4FF", "skyblue");
+        GiftColorDto red = new GiftColorDto("#EA383F", "red");
+        GiftColorDto green = new GiftColorDto("#009456", "green");
+        GiftColorDto yellow = new GiftColorDto("#F9F0A7", "yellow");
+        GiftColorDto pink = new GiftColorDto("#FEC8C8", "pink");
+        GiftColorDto skyblue = new GiftColorDto("#D4DBFF", "skyblue");
 
 
         ArrayList<GiftColorDto> giftColorDto = new ArrayList<>();
@@ -137,9 +137,9 @@ public class S3Service {
     }
     public ArrayList<RibbonColorDto> putRibbonColor(){
 
-        RibbonColorDto green = new RibbonColorDto("00A83F","green");
-        RibbonColorDto red = new RibbonColorDto("E00000","red");
-        RibbonColorDto white = new RibbonColorDto("C5C5C5","white");
+        RibbonColorDto white = new RibbonColorDto("#F5F5F5","01");
+        RibbonColorDto red = new RibbonColorDto("#EA383F","02");
+        RibbonColorDto green = new RibbonColorDto("#009456","03");
 
 
         ArrayList<RibbonColorDto> ribbonColorDto =new ArrayList<>();

@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/quest")
+@RequestMapping("/api/guest")
 public class GuestController {
     private final Neo4jService neo4jService;
     private final MemberNeo4jRepository memberNeo4jRepository;

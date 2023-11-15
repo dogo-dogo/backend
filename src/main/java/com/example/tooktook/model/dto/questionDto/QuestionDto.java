@@ -8,5 +8,5 @@ import java.util.List;
 public class QuestionDto {
     private Long qid;
     private String questions;
-    private List<Integer> answerIds;
+    private List<Long> answerIds;
 }

@@ -41,7 +41,7 @@ public class QuestionController {
                 neo4jService.createMemberWithDefault(loginMember.getUsername()));
     }
 
-    @PostMapping("/{questionId}/answers")
+    @PostMapping("/answers/{questionId}")
     public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
 
         log.info("------------QuestionController 시작 ----------------");

@@ -45,6 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/api/ques/answers/",
             "/api/s3/send-gift-details",
             "/api/s3/save-gift-img",
+            "/api/guest/save-gift-img/",
     };
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

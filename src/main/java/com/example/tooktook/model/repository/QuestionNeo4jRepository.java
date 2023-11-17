@@ -20,10 +20,11 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
 //            " WHERE id(m) = $memberId and id(c)=$cid" +
 //            " RETURN id(q) as qid , q.text as questions, id(a) as aid")
 //    List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
-    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer)\n" +
+    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
             "WHERE id(m) = $memberId AND id(c) = $cid " +
-            "WITH id(q) AS qid, q.text AS questions, COLLECT({answerId: id(a), giftImg: a.giftImg, mainText: a.mainText, optionalText: a.optionalText}) AS answers " +
-            "RETURN qid, questions, answers;")
+            "WITH id(q) AS qid, q.text AS questions, COLLECT(id(a)) AS answerIds, " +
+            "COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText " +
+            "RETURN qid, questions, answerIds,giftImg,mainText,optionalText;")
     List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)" +
@@ -32,6 +33,6 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
     List<QuestionRndDto> findCategoryIdToRandomQuestion(@Param("memberId")Long memberId, @Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
-            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, COLLECT({answerId: id(a), giftImg: a.giftImg, mainText: a.mainText, optionalText: a.optionalText}) AS answers")
+            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText")
     List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
 }

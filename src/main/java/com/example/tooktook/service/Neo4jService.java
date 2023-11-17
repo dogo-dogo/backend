@@ -151,7 +151,7 @@ public class Neo4jService {
         return questionNeo4jRepository.findCategoryIdToQuestion(memberIds,cid);
 
     }
-    public List<QuestionAllDto> getAllCategoryToQuestions(Long loginMember ){
+    public List<QuestionDto> getAllCategoryToQuestions(Long loginMember ){
         log.info("------------QuestionService 시작 ----------------");
         Long memberIds = memberNeo4jRepository.findByMemberId(loginMember)
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))

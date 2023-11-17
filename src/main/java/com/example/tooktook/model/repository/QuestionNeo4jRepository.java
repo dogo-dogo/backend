@@ -23,8 +23,9 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
 //    List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
             "WHERE id(m) = $memberId AND id(c) = $cid " +
-            "WITH id(q) AS qid, q.text AS questions, COLLECT(id(a)) AS answerIds " +
-            "RETURN qid, questions, answerIds;")
+            "WITH id(q) AS qid, q.text AS questions, COLLECT(id(a)) AS answerIds, " +
+            "COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText " +
+            "RETURN qid, questions, answerIds,giftImg,mainText,optionalText;")
     List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)" +
@@ -33,6 +34,6 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
     List<QuestionRndDto> findCategoryIdToRandomQuestion(@Param("memberId")Long memberId, @Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
-            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds")
-    List<QuestionAllDto> findByAllAnswers(@Param("memberId") Long memberId);
+            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText")
+    List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
 }

@@ -68,7 +68,7 @@ public class GuestController {
     }
 
     // api/ques/find/question #memberId
-    @GetMapping("/find/question{memberId}")
+    @GetMapping("/find/question/{memberId}")
     public ApiResponse<?> getCategoryToQuestion(@PathVariable Long memberId, @RequestParam Long cid){
         log.info("------------GuestController 시작 ----------------");
         log.info("--------------path : /api/guest/find/question/{}?cid={} ---------------",memberId,cid);

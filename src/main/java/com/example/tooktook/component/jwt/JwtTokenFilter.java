@@ -37,6 +37,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/api/guest/guest_rnd/",
+            "/api/guest/answers/details/",
+            "/api/guest/find/category/",
+            "/api/guest/find/question/",
+            "/api/guest/guest_rnd/",
+            "/api/guest/other/guest_question/",
     };
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

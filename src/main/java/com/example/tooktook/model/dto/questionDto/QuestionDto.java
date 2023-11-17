@@ -1,5 +1,6 @@
 package com.example.tooktook.model.dto.questionDto;
 
+import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import lombok.Getter;
 
 import java.util.List;
@@ -8,8 +9,6 @@ import java.util.List;
 public class QuestionDto {
     private Long qid;
     private String questions;
-    private List<Long> answerIds;
-    private List<String> giftImg;
-    private List<String> mainText;
-    private List<String> optionalText;
+    private List<AnswerDAO> answers;
+
 }

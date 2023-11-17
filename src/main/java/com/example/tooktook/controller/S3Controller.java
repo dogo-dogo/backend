@@ -44,7 +44,8 @@ public class S3Controller {
 
         log.info("------------S3Controller 시작 ----------------");
         log.info("--------------path : /api/s3/save-gift-img ---------------");
-        s3Service.saveGiftS3Url(member,giftImgDto);
+
+        s3Service.saveGiftS3Url(member.getId(),giftImgDto);
         return ApiResponse.ok(ResponseCode.Normal.CREATE,String.format("%s님의 Gift img 설정",member.getNickName()));
     }
 

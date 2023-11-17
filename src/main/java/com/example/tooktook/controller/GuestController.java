@@ -7,6 +7,7 @@ import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.decoDto.GiftImgDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
 import com.example.tooktook.model.entity.Answer;
@@ -14,6 +15,7 @@ import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.service.AnswerService;
 import com.example.tooktook.service.Neo4jService;
+import com.example.tooktook.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +32,7 @@ public class GuestController {
     private final Neo4jService neo4jService;
     private final MemberNeo4jRepository memberNeo4jRepository;
     private final AnswerService answerService;
+    private final S3Service s3Service;
     @GetMapping("/guest_rnd/{memberId}")
     public ApiResponse<RandomAnswerDto> guestRandomCategoryAndQuestion(@PathVariable Long memberId){
 
@@ -106,5 +109,14 @@ public class GuestController {
         log.info("-------------------requestParm : {} ", answerId);
 
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerService.getAnswerDetails(memberId,answerId));
+    }
+    @PostMapping("/save-gift-img/{memberId}")
+    public ApiResponse<?> saveGiftImg(@PathVariable Long memberId,
+                                      @RequestBody GiftImgDto giftImgDto){
+
+        log.info("------------S3Controller 시작 ----------------");
+        log.info("--------------path : /api/s3/save-gift-img ---------------");
+        s3Service.saveGiftS3Url(memberId,giftImgDto);
+        return ApiResponse.ok(ResponseCode.Normal.CREATE,String.format("memberId %d",memberId));
     }
 }

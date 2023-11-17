@@ -55,9 +55,9 @@ public class S3Service {
 
     }
     @Transactional
-    public void saveGiftS3Url(MemberDetailsDto memberDto, GiftImgDto giftImgDto){
+    public void saveGiftS3Url(Long memberId, GiftImgDto giftImgDto){
         log.info("------------S3service 시작 ----------------");
-        Member member = memberNeo4jRepository.findByMemberId(memberDto.getId())
+        Member member = memberNeo4jRepository.findByMemberId(memberId)
                 .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
 
         Answer answer = answerNeo4jRepository.findByAnswerId(giftImgDto.getAnswerId())

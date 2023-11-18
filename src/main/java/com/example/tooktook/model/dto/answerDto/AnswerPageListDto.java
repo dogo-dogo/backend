@@ -11,4 +11,5 @@ public class AnswerPageListDto {
         private Long id;
         private String category;
         private LocalDateTime createdAt;
+        private String giftImg;
 }

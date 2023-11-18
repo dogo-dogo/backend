@@ -8,8 +8,8 @@ import java.util.List;
 @Getter
 public class QuestionAllDto {
 
-    private Long qid;
-    private String questions;
+    private List<Long> qid;
+    private List<String> questions;
     private Long cid;
     private String categoryName;
 

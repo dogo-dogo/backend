@@ -1,6 +1,7 @@
 package com.example.tooktook.model.repository;
 
 import com.example.tooktook.model.dto.categoryDto.CategoryDto;
+import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
 import com.example.tooktook.model.entity.Question;
@@ -35,4 +36,9 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
             "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText")
     List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
+
+    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question) " +
+            "WHERE id(m) = $memberId " +
+            "RETURN id(q) as qid,q.text as questions,id(c) as cid, c.text as categoryName;")
+    List<QuestionAllDto> findByAllCategoryQuestions(@Param("memberId") Long memberId);
 }

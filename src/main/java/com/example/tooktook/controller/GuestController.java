@@ -16,6 +16,7 @@ import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.service.AnswerService;
 import com.example.tooktook.service.Neo4jService;
 import com.example.tooktook.service.S3Service;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -118,5 +119,12 @@ public class GuestController {
         log.info("--------------path : /api/s3/save-gift-img ---------------");
         s3Service.saveGiftS3Url(memberId,giftImgDto);
         return ApiResponse.ok(ResponseCode.Normal.CREATE,String.format("memberId %d",memberId));
+    }
+
+    @GetMapping("/all/find/{memberId}")
+    public ApiResponse<?> findAll(@PathVariable Long memberId){
+        log.info("----------- All find Start--------- ");
+
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllGet(memberId));
     }
 }

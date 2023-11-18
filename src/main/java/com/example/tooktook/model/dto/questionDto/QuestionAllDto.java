@@ -10,6 +10,8 @@ public class QuestionAllDto {
 
     private Long qid;
     private String questions;
-    private List<AnswerDAO> answers;
+    private Long cid;
+    private String categoryName;
+
 }
 

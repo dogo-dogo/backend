@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public class CategoryNotify {
     private String categoryName;
-    private int totalAnswerCount;
+    private int answerCount;
 }

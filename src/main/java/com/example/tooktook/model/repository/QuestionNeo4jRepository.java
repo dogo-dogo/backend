@@ -43,9 +43,10 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
             "RETURN COLLECT(id(q)) as qid, COLLECT(q.text) as questions,id(c) as cid, c.text as categoryName;")
     List<QuestionAllDto> findByAllCategoryQuestions(@Param("memberId") Long memberId);
 
-    @Query("MATCH (m:member)-[:CATEGORY]->(c:CATEGORY)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:ANSWER) " +
-            "WHERE m.memberId = $memberId " +
+    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question) " +
+            "WHERE id(m) = $memberId " +
+            "OPTIONAL MATCH (q)-[:HAS_ANSWER]->(a:Answer) " +
             "WITH c, COUNT(a) AS answerCount " +
-            "RETURN c.categoryName AS categoryName, SUM(answerCount) AS totalAnswerCount;")
+            "RETURN c.text as CategoryName, answerCount;")
     List<CategoryNotify> findAllByCounting(@Param("memberId") Long memberId);
 }

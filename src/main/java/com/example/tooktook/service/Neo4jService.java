@@ -99,7 +99,7 @@ public class Neo4jService {
         List<CategoryNotify> categoryNotify = questionNeo4jRepository.findAllByCounting(memberId);
 
         int[] totalAnswerCounts = categoryNotify.stream()
-                .mapToInt(CategoryNotify::getTotalAnswerCount)
+                .mapToInt(CategoryNotify::getAnswerCount)
                 .toArray();
 
         notification.setAnswerCounts(totalAnswerCounts);

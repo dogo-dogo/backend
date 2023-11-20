@@ -14,6 +14,7 @@ import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.service.Neo4jService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,6 +80,7 @@ public class QuestionController {
                     neo4jService.getCategoryToQuestion(loginMember.getId(),cid));
         }
     }
+
 
     @DeleteMapping("/delete/answer")
     public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){

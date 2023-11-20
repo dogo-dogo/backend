@@ -5,16 +5,19 @@ import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.entity.Notification;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
 import com.example.tooktook.model.repository.NotificationRepository;
+import com.example.tooktook.model.repository.QuestionNeo4jRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +29,7 @@ public class AnswerService {
     private final AnswerNeo4jRepository answerNeo4jRepository;
     private final NotificationRepository notificationRepository;
 
+    private final QuestionNeo4jRepository questionNeo4jRepository;
     public AnswerPageDto getAnswersByCategory(Pageable pageable, MemberDetailsDto member) {
         int curPage = pageable.getPageNumber()-1;
         int pageSize = pageable.getPageSize();
@@ -91,5 +95,26 @@ public class AnswerService {
 
         log.info("------------answerController > Service 종료 ----------------");
         return answerNeo4jRepository.findByAnswersDetails(memberId,answerId);
+    }
+
+    public List<Boolean> getAllcheckAnswerGreen(Long memberId) {
+        Notification notification = notificationRepository.findByNotification(memberId);
+        List<CategoryNotify> categoryNotify = questionNeo4jRepository.findAllByCounting(memberId);
+
+        // [2 , 0 , 2 ,0 , 1]
+        int[] totalAnswerCounts = categoryNotify.stream()
+                .mapToInt(CategoryNotify::getAnswerCount)
+                .toArray();
+
+        // [2 , 0 , 1 ,1 , 1]
+        int [] notificationGet = notification.getAnswerCounts();
+
+        List<Boolean> result = new ArrayList<>();
+
+        for (int i = 0; i <totalAnswerCounts.length ; i++) {
+
+            result.add(totalAnswerCounts[i] == notificationGet[i]);
+        }
+        return result;
     }
 }

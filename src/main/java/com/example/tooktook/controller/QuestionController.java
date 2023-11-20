@@ -41,14 +41,14 @@ public class QuestionController {
                 neo4jService.createMemberWithDefault(loginMember.getUsername()));
     }
 
-    @PostMapping("/answers/{questionId}")
-    public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto) {
+    @PostMapping("/answers/{questionId}/{memberId}")
+    public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto,@PathVariable Long memberId) {
 
         log.info("------------QuestionController 시작 ----------------");
         log.info("--------------path : /api/ques/{questionId}/answers ---------------");
         log.info("--------------PathVariable : {} ---------------" ,questionId);
 
-        Long answerId = neo4jService.addAnswerToQuestion(questionId,answerdto);
+        Long answerId = neo4jService.addAnswerToQuestion(questionId,answerdto,memberId);
 
 
         log.info("------------QuestionController 종료 ----------------");

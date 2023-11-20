@@ -6,6 +6,7 @@ import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
@@ -90,10 +91,19 @@ public class Neo4jService {
     }
 
     @Transactional
-    public Long addAnswerToQuestion(Long questionId, AnswerDto answerDto) {
+    public Long addAnswerToQuestion(Long questionId, AnswerDto answerDto,Long memberId) {
 
         // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
+        Notification notification = notificationRepository.findByNotification(memberId);
+        List<CategoryNotify> categoryNotify = questionNeo4jRepository.findAllByCounting(memberId);
+
+        int[] totalAnswerCounts = categoryNotify.stream()
+                .mapToInt(CategoryNotify::getTotalAnswerCount)
+                .toArray();
+
+        notification.setAnswerCounts(totalAnswerCounts);
+        notificationRepository.save(notification);
 
         if (questionOptional.isPresent()) {
             Question question = questionOptional.get();

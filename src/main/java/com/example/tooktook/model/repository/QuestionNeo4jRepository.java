@@ -1,6 +1,7 @@
 package com.example.tooktook.model.repository;
 
 import com.example.tooktook.model.dto.categoryDto.CategoryDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
@@ -41,4 +42,10 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
             "WHERE id(m) = $memberId " +
             "RETURN COLLECT(id(q)) as qid, COLLECT(q.text) as questions,id(c) as cid, c.text as categoryName;")
     List<QuestionAllDto> findByAllCategoryQuestions(@Param("memberId") Long memberId);
+
+    @Query("MATCH (m:member)-[:CATEGORY]->(c:CATEGORY)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:ANSWER) " +
+            "WHERE m.memberId = $memberId " +
+            "WITH c, COUNT(a) AS answerCount " +
+            "RETURN c.categoryName AS categoryName, SUM(answerCount) AS totalAnswerCount;")
+    List<CategoryNotify> findAllByCounting(@Param("memberId") Long memberId);
 }

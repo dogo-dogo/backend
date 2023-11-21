@@ -74,10 +74,9 @@ public class KakaoService {
         Member member = Member.builder()
                 .loginEmail(strEmail)
                 .nickname(oAuthInfoResponse.getNickName())
-                .gender(oAuthInfoResponse.getGender())
                 .visit(Boolean.FALSE)
                 .role(MemberRole.KAKAO)
-                .doorImg("default")
+                .doorImg("https://dogo-dogo.s3.ap-northeast-2.amazonaws.com/BG_red_01.png")
                 .build();
         log.error("newMember :: " + member.getMemberId());
         memberNeo4jRepository.save(member);

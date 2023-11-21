@@ -41,7 +41,7 @@ public class Member{
     }
 
     @Builder
-    public Member (String loginEmail, String nickname, String gender,
+    public Member (String loginEmail, String nickname,
                    Boolean visit, MemberRole role,String color,String decorate,String doorImg ){
         this.loginEmail = loginEmail;
         this.nickname = nickname;

@@ -7,6 +7,7 @@ import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.decoDto.GiftImgDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
@@ -126,5 +127,9 @@ public class GuestController {
         log.info("----------- All find Start--------- ");
 
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllGet(memberId));
+    }
+    @GetMapping("/myspace/{memberId}")
+    public ApiResponse<List<mainPageDto>> mySpaceGetAll(@PathVariable Long memberId){
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllListMain(memberId));
     }
 }

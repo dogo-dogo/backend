@@ -7,6 +7,7 @@ import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
@@ -277,5 +278,9 @@ public class Neo4jService {
     public List<QuestionAllDto> findAllGet(Long memberId){
         log.info("-------------service Start_--------");
         return questionNeo4jRepository.findByAllCategoryQuestions(memberId);
+    }
+    public List<mainPageDto> findAllListMain(Long memberId){
+        log.info("---------------find ALL LIST MAIN GIFT IMG -------------");
+        return questionNeo4jRepository.mySpaceGetAll(memberId);
     }
 }

@@ -2,6 +2,7 @@ package com.example.tooktook.model.repository;
 
 import com.example.tooktook.model.dto.categoryDto.CategoryDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
@@ -47,6 +48,13 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
             "WHERE id(m) = $memberId " +
             "OPTIONAL MATCH (q)-[:HAS_ANSWER]->(a:Answer) " +
             "WITH c, COUNT(a) AS answerCount " +
-            "RETURN c.text as CategoryName, answerCount;")
+            "RETURN c.text as CategoryName, answerCount " +
+            "ORDER BY CategoryName DESC;")
     List<CategoryNotify> findAllByCounting(@Param("memberId") Long memberId);
+
+    @Query("MATCH(m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
+            "WHERE id(m) = $memberId " +
+            "return c.text as categoryName ,COLLECT(a.giftImg) as giftImg " +
+            "ORDER BY categoryName DESC;")
+    List<mainPageDto> mySpaceGetAll(@Param("memberId") Long memberId);
 }

@@ -6,6 +6,7 @@ import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
@@ -40,6 +41,11 @@ public class QuestionController {
 
         return ApiResponse.ok(ResponseCode.Normal.CREATE,
                 neo4jService.createMemberWithDefault(loginMember.getUsername()));
+    }
+
+    @GetMapping("/myspace")
+    public ApiResponse<List<mainPageDto>> mySpaceGetAll(@AuthenticationPrincipal MemberDetailsDto loginMember){
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllListMain(loginMember.getId()));
     }
 
     @PostMapping("/answers/{questionId}/{memberId}")

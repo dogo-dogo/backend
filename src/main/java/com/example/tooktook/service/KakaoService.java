@@ -1,6 +1,7 @@
 package com.example.tooktook.service;
 
 import com.example.tooktook.common.response.ResponseCode;
+import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.component.jwt.RequestOAuthInfoService;
 import com.example.tooktook.component.security.AuthTokens;
 import com.example.tooktook.component.security.AuthTokensGenerator;
@@ -14,8 +15,10 @@ import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +32,6 @@ public class KakaoService {
     private final MemberNeo4jRepository memberNeo4jRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
-
     public AuthTokens login(OAuthLoginParams kakaoAccessCode, HttpServletResponse response) {
 
         log.info("------------kakaoService  login 시작---------------");
@@ -56,7 +58,8 @@ public class KakaoService {
         String strEmail = "";
 
         if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
-            strEmail = oAuthInfoResponse.getNickName() + "@" + "dogodogo.com";
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
+            strEmail = chgNick + "@" + "dogodogo.com";
         }else{
             strEmail = oAuthInfoResponse.getEmail();
         }
@@ -72,6 +75,7 @@ public class KakaoService {
         memberNeo4jRepository.save(member);
 
         return member.getLoginEmail();
+//        return member == null ? strEmail : member.getLoginEmail();
     }
 
     public MemberDto getMemberInfo(Long memberId) {
@@ -85,6 +89,7 @@ public class KakaoService {
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
         return MemberDetailsDto.from(member);
     }
+
 
 
 }

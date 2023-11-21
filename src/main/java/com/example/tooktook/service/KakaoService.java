@@ -53,8 +53,15 @@ public class KakaoService {
     @Transactional
     public String newMember(OAuthInfoResponse oAuthInfoResponse) {
 
+        String strEmail = "";
+
+        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
+            strEmail = oAuthInfoResponse.getNickName() + "@" + "dogodogo.com";
+        }else{
+            strEmail = oAuthInfoResponse.getEmail();
+        }
         Member member = Member.builder()
-                .loginEmail(oAuthInfoResponse.getEmail())
+                .loginEmail(strEmail)
                 .nickname(oAuthInfoResponse.getNickName())
                 .gender(oAuthInfoResponse.getGender())
                 .visit(Boolean.FALSE)

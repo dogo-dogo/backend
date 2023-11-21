@@ -45,11 +45,19 @@ public class KakaoService {
 
     @Transactional
     public String findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
-
+        String strEmail = "";
         log.error("findOrCreateMember :: " + oAuthInfoResponse.getEmail());
-        return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
-                .map(Member::getLoginEmail)
-                .orElseGet(() -> newMember(oAuthInfoResponse));
+
+        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
+            strEmail = chgNick + "@" + "dogodogo.com";
+            return memberNeo4jRepository.findByLoginEmail(strEmail).map(Member::getLoginEmail)
+                    .orElseGet(() -> newMember(oAuthInfoResponse));
+        }else{
+            return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
+                    .map(Member::getLoginEmail)
+                    .orElseGet(() -> newMember(oAuthInfoResponse));
+        }
     }
 
     @Transactional

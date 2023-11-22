@@ -101,23 +101,25 @@ public class AnswerService {
         Notification notification = notificationRepository.findByNotification(memberId);
         List<CategoryNotify> categoryNotify = questionNeo4jRepository.findAllByCounting(memberId);
 
-        // [2 , 0 , 2 ,0 , 1]
+        // 1,0,1,1,0 현재
         int[] totalAnswerCounts = categoryNotify.stream()
                 .mapToInt(CategoryNotify::getAnswerCount)
                 .toArray();
 
-        // [2 , 0 , 1 ,1 , 1]
+        // 0,0,1,1,0 과거
         int [] notificationGet = notification.getAnswerCounts();
 
-        // 현재          과거
-        // [2,0,1,1,1] - [2,0,2,0,1]
-        // [2,0,3,1,2] - [2,1,2,0,1]
-        // [1,0,0,0,0] - [0,0,1,0,0]
-        //  2-2 = t , 0-0 =t ,1-2 = f,
+        // 현재(totalAnswerCounts)        과거(notificationGet)
+        //1,0,1,1,0     0,0,2,1,0
         List<Boolean> result = new ArrayList<>();
 
         for (int i = 0; i <totalAnswerCounts.length ; i++) {
-            result.add((notificationGet[i] - totalAnswerCounts[i])>=1);
+            int diff =totalAnswerCounts[i] - notificationGet[i];
+            if(diff >= 1) {
+                result.add(true);
+            }else{
+                result.add(false);
+            }
         }
         return result;
     }

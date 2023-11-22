@@ -12,4 +12,5 @@ public class QuestionDto {
     private List<String> giftImg;
     private List<String> mainText;
     private List<String> optionalText;
+    private String cdt;
 }

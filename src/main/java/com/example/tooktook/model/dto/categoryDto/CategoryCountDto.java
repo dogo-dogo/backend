@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 public class CategoryCountDto {
     private List<CategoryListDto> categoryLists;
-    private Integer totalCount;
+    private totalCountDto totalCount;
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class CategoryListDto {
     private Long cid;
-    private String categoryName;
+    private String CategoryName;
     private Integer answerCount;
 
 }

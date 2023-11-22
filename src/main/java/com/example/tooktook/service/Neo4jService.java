@@ -135,20 +135,18 @@ public class Neo4jService {
 
         List<CategoryListDto> categoryListDtoList = categoryNeo4jRepository.findCategoryByCount(memberIds);
 
+        int totalSize = categoryListDtoList.stream()
+                .mapToInt(CategoryListDto::getAnswerCount)
+                .sum();
+
+        totalCountDto totalCountDto = new totalCountDto(99999L,totalSize);
 
         CategoryCountDto categoryCountDto = CategoryCountDto
                 .builder()
                 .categoryLists(categoryListDtoList)
-                .totalCount(
-                        categoryListDtoList.stream()
-                                .mapToInt(CategoryListDto::getAnswerCount)
-                                .sum()
-                )
+                .totalCount(totalCountDto)
                 .build();
 
-//        int totalSize = categoryListDtoList.stream()
-//                .mapToInt(CategoryListDto::getAnswerCount)
-//                .sum();
 //
 //        categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
 

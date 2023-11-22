@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AnswerNeo4jRepository extends Neo4jRepository<Answer, Long> {
     @Query("MATCH(M:Member)-[:CATEGORY]->(C:Category)-[:ASKS]->(Q:Question)-[:HAS_ANSWER]->(A:Answer) " +
             "WHERE id(M) = $memberId " +
-            "RETURN id(A) as id, C.text as category, A.createdAt as createdAt, A.giftImg as giftImg" +
+            "RETURN id(A) as id, C.text as category, A.createdAt as createdAt, A.giftImg as giftImg " +
             "ORDER BY A.createdAt")
     List<AnswerPageListDto> findAllByCategoryFromAnswer(@Param("memberId") Long memberId);
 

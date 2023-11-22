@@ -109,11 +109,15 @@ public class AnswerService {
         // [2 , 0 , 1 ,1 , 1]
         int [] notificationGet = notification.getAnswerCounts();
 
+        // 현재          과거
+        // [2,0,1,1,1] - [2,0,2,0,1]
+        // [2,0,3,1,2] - [2,1,2,0,1]
+        // [1,0,0,0,0] - [0,0,1,0,0]
+        //  2-2 = t , 0-0 =t ,1-2 = f,
         List<Boolean> result = new ArrayList<>();
 
         for (int i = 0; i <totalAnswerCounts.length ; i++) {
-
-            result.add(totalAnswerCounts[i] == notificationGet[i]);
+            result.add((notificationGet[i] - totalAnswerCounts[i])>=1);
         }
         return result;
     }

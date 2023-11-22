@@ -5,6 +5,7 @@ import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryCountDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
 import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
@@ -63,7 +64,7 @@ public class QuestionController {
 
     }
     @GetMapping("/find/category")
-    public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
+    public ApiResponse<CategoryCountDto> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
         log.info("------------QuestionController 시작 ----------------");
         log.info("--------------path : /api/ques/find/category ---------------");
 

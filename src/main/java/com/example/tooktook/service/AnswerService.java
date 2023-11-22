@@ -6,10 +6,8 @@ import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
-import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.entity.Notification;
 import com.example.tooktook.model.repository.AnswerNeo4jRepository;
-import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.model.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +25,6 @@ public class AnswerService {
 
     private final AnswerNeo4jRepository answerNeo4jRepository;
     private final NotificationRepository notificationRepository;
-    public AnswerDAO getAnswerDetails;
 
     public AnswerPageDto getAnswersByCategory(Pageable pageable, MemberDetailsDto member) {
         int curPage = pageable.getPageNumber()-1;
@@ -42,8 +39,12 @@ public class AnswerService {
 
 
         if (startIdx > endIdx){
+            log.error("------------ERROR  종료 ----------------");
+            log.info("------------answerController > Service 종료 ----------------");
             throw new GlobalException(ResponseCode.ErrorCode.PAGE_OVER);
         }else{
+
+            log.info("------------answerController > Service 종료 ----------------");
             List<AnswerPageListDto> pagedAnswers = answers.subList(startIdx, endIdx);
             return new AnswerPageDto(pagedAnswers, curPage +1, calculateTotalPages(answers.size(), pageSize));
         }
@@ -77,13 +78,18 @@ public class AnswerService {
             Integer BeforeCnt = notification.getBeforeCnt();
             notification.setBeforeCnt(afterCnt);
             notificationRepository.save(notification);
+
+            log.info("------------answerController > Service 종료 ----------------");
             return afterCnt - BeforeCnt;
         }
     }
-    public AnswerDAO getGetAnswerDetails(MemberDetailsDto member,Long answerId){
+
+    public AnswerDAO getAnswerDetails(MemberDetailsDto member, Long answerId) {
 
         answerNeo4jRepository.findByAnswerId(answerId)
                 .orElseThrow(()->new GlobalException(ResponseCode.ErrorCode.NOT_FIND_ANSWER_ID));
+
+        log.info("------------answerController > Service 종료 ----------------");
         return answerNeo4jRepository.findByAnswersDetails(member.getId(),answerId);
     }
 }

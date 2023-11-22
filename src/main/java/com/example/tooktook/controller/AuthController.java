@@ -23,13 +23,23 @@ public class AuthController {
     @PostMapping("/auth/kakao")
     public ApiResponse<AuthTokens> loginKakao(@RequestBody KakaoLoginParams kakaoAccessCode, HttpServletResponse response) {
 
+        log.info("------------AuthController 시작 ----------------");
+        log.info("--------------path : /api/auth/kakao ---------------");
+
+
         AuthTokens authTokens = kakaoService.login(kakaoAccessCode,response);
+
+        log.info("------------AuthController  종료---------------");
         return ApiResponse.ok(ResponseCode.Normal.CREATE,authTokens);
     }
 
     @ResponseBody
     @GetMapping("/kakao/callback")
     public ResponseEntity<String> kakaoCallback(@RequestParam String code) {
+
+        log.info("------------AuthController 시작 ----------------");
+        log.info("--------------path : /api/kakao/callback ---------------");
+        log.info("------------AuthController 종료---------------");
 
         return ResponseEntity.ok(code);
     }

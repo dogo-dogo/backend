@@ -32,6 +32,7 @@ public class KakaoService {
 
     public AuthTokens login(OAuthLoginParams kakaoAccessCode, HttpServletResponse response) {
 
+        log.info("------------kakaoService  login 시작---------------");
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(kakaoAccessCode);
         String memberEmail = findOrCreateMember(oAuthInfoResponse);
         log.info("login memberId (login)  :: " + memberEmail);

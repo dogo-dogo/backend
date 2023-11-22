@@ -40,8 +40,6 @@ public class Member{
         this.doorImg = doorImg;
     }
 
-
-
     @Builder
     public Member (String loginEmail, String nickname, String gender,
                    Boolean visit, MemberRole role,String color,String decorate,String doorImg ){
@@ -50,7 +48,6 @@ public class Member{
         this.visit = visit;
         this.role = role;
         this.doorImg = doorImg;
-
     }
 
     public void changeVisit(){

@@ -35,6 +35,7 @@ public class ResponseCode {
         PAGE_OVER(HttpStatus.BAD_REQUEST,"페이지가 초과 하였습니다."),
         AWS_S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AWS S3 URL 호출 ERROR."),
 
+
         ;
 
 

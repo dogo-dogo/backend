@@ -4,6 +4,8 @@ import com.example.tooktook.model.dto.decoDto.ImageUrlDto;
 import com.example.tooktook.model.entity.Member;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.Optional;
 
 
@@ -21,5 +23,9 @@ public interface MemberNeo4jRepository extends Neo4jRepository<Member, Long> {
 //    @Query("MATCH (m:Member)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
 //            "WHERE id(m) = $memberId RETURN id(q) as questionId, q.text as questionText, collect(id(a)) as answerIds")
 //    List<QuestionDTO> findQuestionsByMemberId(@Param("memberId") Long memberId);
+
+    @Query("MATCH (m:Member)" + "WHERE id(m)=$memberId"+"DETACH DELETE m")
+    void deleteMemberInfo(@Param("memberId") Long memberId);
+
 
 }

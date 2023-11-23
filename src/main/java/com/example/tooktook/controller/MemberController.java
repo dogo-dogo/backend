@@ -26,7 +26,7 @@ public class MemberController {
     private final MemberService memberService;
     @PutMapping("/nickname")
     public ApiResponse<?> setNickName(
-            @RequestParam @Valid @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,6}$", message = "닉네임은 2~6자의 영문, 숫자, 한글만 사용 가능합니다.")
+            @RequestParam @Valid @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,4}$", message = "닉네임은 2~6자의 영문, 숫자, 한글만 사용 가능합니다.")
             String nickName,
             @AuthenticationPrincipal MemberDetailsDto loginMember
     ) {

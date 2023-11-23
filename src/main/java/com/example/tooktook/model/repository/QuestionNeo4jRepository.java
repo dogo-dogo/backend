@@ -2,6 +2,7 @@ package com.example.tooktook.model.repository;
 
 import com.example.tooktook.model.dto.categoryDto.CategoryDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
@@ -25,8 +26,8 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
             "WHERE id(m) = $memberId AND id(c) = $cid " +
             "WITH id(q) AS qid, q.text AS questions, COLLECT(id(a)) AS answerIds, " +
-            "COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText " +
-            "RETURN qid, questions, answerIds,giftImg,mainText,optionalText;")
+            "COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText, a.createdAt as cdt " +
+            "RETURN qid, questions, answerIds,giftImg,mainText,optionalText, cdt;")
     List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)" +
@@ -35,7 +36,8 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
     List<QuestionRndDto> findCategoryIdToRandomQuestion(@Param("memberId")Long memberId, @Param("cid") Long cid);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
-            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText")
+            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText," +
+            " a.createdAt as cdt;")
     List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question) " +
@@ -43,9 +45,17 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
             "RETURN COLLECT(id(q)) as qid, COLLECT(q.text) as questions,id(c) as cid, c.text as categoryName;")
     List<QuestionAllDto> findByAllCategoryQuestions(@Param("memberId") Long memberId);
 
-    @Query("MATCH (m:member)-[:CATEGORY]->(c:CATEGORY)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:ANSWER) " +
-            "WHERE m.memberId = $memberId " +
+    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question) " +
+            "WHERE id(m) = $memberId " +
+            "OPTIONAL MATCH (q)-[:HAS_ANSWER]->(a:Answer) " +
             "WITH c, COUNT(a) AS answerCount " +
-            "RETURN c.categoryName AS categoryName, SUM(answerCount) AS totalAnswerCount;")
+            "RETURN c.text as CategoryName, answerCount " +
+            "ORDER BY CategoryName DESC;")
     List<CategoryNotify> findAllByCounting(@Param("memberId") Long memberId);
+
+    @Query("MATCH(m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
+            "WHERE id(m) = $memberId " +
+            "return c.text as categoryName ,COLLECT(a.giftImg) as giftImg " +
+            "ORDER BY categoryName DESC;")
+    List<mainPageDto> mySpaceGetAll(@Param("memberId") Long memberId);
 }

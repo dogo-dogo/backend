@@ -5,7 +5,9 @@ import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryCountDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
 import com.example.tooktook.model.dto.questionDto.QuestionRndDto;
@@ -14,6 +16,7 @@ import com.example.tooktook.model.entity.Question;
 import com.example.tooktook.service.Neo4jService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +44,11 @@ public class QuestionController {
                 neo4jService.createMemberWithDefault(loginMember.getUsername()));
     }
 
+    @GetMapping("/myspace")
+    public ApiResponse<List<mainPageDto>> mySpaceGetAll(@AuthenticationPrincipal MemberDetailsDto loginMember){
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllListMain(loginMember.getId()));
+    }
+
     @PostMapping("/answers/{questionId}/{memberId}")
     public ApiResponse<?> addAnswerToQuestion(@PathVariable Long questionId, @RequestBody @Valid AnswerDto answerdto,@PathVariable Long memberId) {
 
@@ -56,7 +64,7 @@ public class QuestionController {
 
     }
     @GetMapping("/find/category")
-    public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
+    public ApiResponse<CategoryCountDto> getMemberIdToCategoryAllCount(@AuthenticationPrincipal MemberDetailsDto loginMember){
         log.info("------------QuestionController 시작 ----------------");
         log.info("--------------path : /api/ques/find/category ---------------");
 
@@ -79,6 +87,7 @@ public class QuestionController {
                     neo4jService.getCategoryToQuestion(loginMember.getId(),cid));
         }
     }
+
 
     @DeleteMapping("/delete/answer")
     public ApiResponse<?> deleteToAnswerId(@AuthenticationPrincipal MemberDetailsDto loginMember, @RequestParam Long answerId){

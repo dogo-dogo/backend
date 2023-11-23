@@ -4,6 +4,7 @@ import com.example.tooktook.component.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,6 @@ public class AuthTokensGenerator {
     private static final String BEARER_TYPE = "Bearer";
     private static final String REFRESH_HEADER = "Refresh";
     private static final String AUTHORIZATION_HEADER = "Authorization";
-
 
     @Value("${ACCESS_TOKEN_EXPIRE_TIME}")
     private long ACCESS_TOKEN_EXPIRE_TIME;

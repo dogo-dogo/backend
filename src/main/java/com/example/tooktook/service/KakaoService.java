@@ -1,6 +1,7 @@
 package com.example.tooktook.service;
 
 import com.example.tooktook.common.response.ResponseCode;
+import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.component.jwt.RequestOAuthInfoService;
 import com.example.tooktook.component.security.AuthTokens;
 import com.example.tooktook.component.security.AuthTokensGenerator;
@@ -14,8 +15,10 @@ import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +32,6 @@ public class KakaoService {
     private final MemberNeo4jRepository memberNeo4jRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
-
     public AuthTokens login(OAuthLoginParams kakaoAccessCode, HttpServletResponse response) {
 
         log.info("------------kakaoService  login 시작---------------");
@@ -43,28 +45,44 @@ public class KakaoService {
 
     @Transactional
     public String findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
-
+        String strEmail = "";
         log.error("findOrCreateMember :: " + oAuthInfoResponse.getEmail());
-        return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
-                .map(Member::getLoginEmail)
-                .orElseGet(() -> newMember(oAuthInfoResponse));
+
+        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
+            strEmail = chgNick + "@" + "dogodogo.com";
+            return memberNeo4jRepository.findByLoginEmail(strEmail).map(Member::getLoginEmail)
+                    .orElseGet(() -> newMember(oAuthInfoResponse));
+        }else{
+            return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
+                    .map(Member::getLoginEmail)
+                    .orElseGet(() -> newMember(oAuthInfoResponse));
+        }
     }
 
     @Transactional
     public String newMember(OAuthInfoResponse oAuthInfoResponse) {
 
+        String strEmail = "";
+
+        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
+            strEmail = chgNick + "@" + "dogodogo.com";
+        }else{
+            strEmail = oAuthInfoResponse.getEmail();
+        }
         Member member = Member.builder()
-                .loginEmail(oAuthInfoResponse.getEmail())
+                .loginEmail(strEmail)
                 .nickname(oAuthInfoResponse.getNickName())
-                .gender(oAuthInfoResponse.getGender())
                 .visit(Boolean.FALSE)
                 .role(MemberRole.KAKAO)
-                .doorImg("default")
+                .doorImg("https://dogo-dogo.s3.ap-northeast-2.amazonaws.com/BG_red_01.png")
                 .build();
         log.error("newMember :: " + member.getMemberId());
         memberNeo4jRepository.save(member);
 
         return member.getLoginEmail();
+//        return member == null ? strEmail : member.getLoginEmail();
     }
 
     public MemberDto getMemberInfo(Long memberId) {
@@ -78,6 +96,7 @@ public class KakaoService {
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
         return MemberDetailsDto.from(member);
     }
+
 
 
 }

@@ -6,7 +6,9 @@ import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDAO;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
+import com.example.tooktook.model.dto.categoryDto.CategoryCountDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
+import com.example.tooktook.model.dto.categoryDto.mainPageDto;
 import com.example.tooktook.model.dto.decoDto.GiftImgDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.dto.questionDto.QuestionOtherDto;
@@ -63,7 +65,7 @@ public class GuestController {
     }
     // api/ques/find/category #memberId
     @GetMapping("/find/category/{memberId}")
-    public ApiResponse<List<CategoryListDto>> getMemberIdToCategoryAllCount(@PathVariable Long memberId){
+    public ApiResponse<CategoryCountDto> getMemberIdToCategoryAllCount(@PathVariable Long memberId){
         log.info("------------GuestController 시작 ----------------");
         log.info("--------------path : /api/guest/find/category/{} ---------------",memberId);
 
@@ -126,5 +128,9 @@ public class GuestController {
         log.info("----------- All find Start--------- ");
 
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllGet(memberId));
+    }
+    @GetMapping("/myspace/{memberId}")
+    public ApiResponse<List<mainPageDto>> mySpaceGetAll(@PathVariable Long memberId){
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllListMain(memberId));
     }
 }

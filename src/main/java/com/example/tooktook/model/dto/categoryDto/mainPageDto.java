@@ -2,8 +2,10 @@ package com.example.tooktook.model.dto.categoryDto;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
-public class CategoryNotify {
+public class mainPageDto {
     private String categoryName;
-    private int answerCount;
+    private List<String> giftImg;
 }

@@ -4,9 +4,7 @@ import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
-import com.example.tooktook.model.dto.categoryDto.CategoryDto;
-import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
-import com.example.tooktook.model.dto.categoryDto.CategoryNotify;
+import com.example.tooktook.model.dto.categoryDto.*;
 import com.example.tooktook.model.dto.questionDto.QuestionAllDto;
 import com.example.tooktook.model.dto.questionDto.QuestionDto;
 import com.example.tooktook.model.dto.enumDto.*;
@@ -95,13 +93,11 @@ public class Neo4jService {
 
         // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
-
         Notification notification = notificationRepository.findByNotification(memberId);
-
         List<CategoryNotify> categoryNotify = questionNeo4jRepository.findAllByCounting(memberId);
 
         int[] totalAnswerCounts = categoryNotify.stream()
-                .mapToInt(CategoryNotify::getTotalAnswerCount)
+                .mapToInt(CategoryNotify::getAnswerCount)
                 .toArray();
 
         notification.setAnswerCounts(totalAnswerCounts);
@@ -129,7 +125,7 @@ public class Neo4jService {
         }
     }
 
-    public List<CategoryListDto> getAllCategoryCount(Long loginMember) {
+    public CategoryCountDto getAllCategoryCount(Long loginMember) {
 
         log.info("------------QuestionService 시작 ----------------");
         Long memberIds = memberNeo4jRepository.findByMemberId(loginMember)
@@ -139,16 +135,24 @@ public class Neo4jService {
 
         List<CategoryListDto> categoryListDtoList = categoryNeo4jRepository.findCategoryByCount(memberIds);
 
-
         int totalSize = categoryListDtoList.stream()
                 .mapToInt(CategoryListDto::getAnswerCount)
                 .sum();
 
-        categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
+        totalCountDto totalCountDto = new totalCountDto(99999L,totalSize);
+
+        CategoryCountDto categoryCountDto = CategoryCountDto
+                .builder()
+                .categoryLists(categoryListDtoList)
+                .totalCount(totalCountDto)
+                .build();
+
+//
+//        categoryListDtoList.forEach(dto -> dto.setTotalCount(totalSize));
 
         log.info("------------QuestionController 종료 ----------------");
 
-        return categoryListDtoList;
+        return categoryCountDto;
     }
 
 
@@ -279,6 +283,10 @@ public class Neo4jService {
     public List<QuestionAllDto> findAllGet(Long memberId){
         log.info("-------------service Start_--------");
         return questionNeo4jRepository.findByAllCategoryQuestions(memberId);
+    }
+    public List<mainPageDto> findAllListMain(Long memberId){
+        log.info("---------------find ALL LIST MAIN GIFT IMG -------------");
+        return questionNeo4jRepository.mySpaceGetAll(memberId);
     }
 
     public Boolean getBoolVisit(Long memberId) {

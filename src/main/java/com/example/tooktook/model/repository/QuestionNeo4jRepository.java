@@ -23,22 +23,45 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
 //            " WHERE id(m) = $memberId and id(c)=$cid" +
 //            " RETURN id(q) as qid , q.text as questions, id(a) as aid")
 //    List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
+//    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
+//            "WHERE id(m) = $memberId AND id(c) = $cid " +
+//            "WITH id(q) AS qid, q.text AS questions, COLLECT(id(a)) AS answerIds, " +
+//            "COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText, a.createdAt as cdt " +
+//            "RETURN qid, questions, answerIds,giftImg,mainText,optionalText, cdt;")
+//    List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
+
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
-            "WHERE id(m) = $memberId AND id(c) = $cid " +
-            "WITH id(q) AS qid, q.text AS questions, COLLECT(id(a)) AS answerIds, " +
-            "COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText, a.createdAt as cdt " +
-            "RETURN qid, questions, answerIds,giftImg,mainText,optionalText, cdt;")
+            "            WHERE id(m) = $$memberId AND id(c) = $cid " +
+            "            WITH q, COLLECT(a) AS answers " +
+            "RETURN q.text AS questions, " +
+            "       id(q) AS qid, " +
+            "       [answer IN answers | id(answer)] AS answerIds, " +
+            "       [answer IN answers | answer.giftImg] AS giftImg, " +
+            "       [answer IN answers | answer.mainText] AS mainText, " +
+            "       [answer IN answers | answer.optionalText] AS optionalText, " +
+            "       [answer IN answers | answer.createdAt] AS cdt;")
     List<QuestionDto> findCategoryIdToQuestion(@Param("memberId")Long memberId,@Param("cid") Long cid);
+//    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
+//            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText," +
+//            " a.createdAt as cdt;")
+//    List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
+    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
+            "WHERE id(m) = $memberId " +
+            "WITH q, COLLECT(a) AS answers " +
+            "RETURN q.text AS questions, " +
+            "       id(q) AS qid, " +
+            "       [answer IN answers | id(answer)] AS answerIds, " +
+            "       [answer IN answers | answer.giftImg] AS giftImg, " +
+            "       [answer IN answers | answer.mainText] AS mainText, " +
+            "       [answer IN answers | answer.optionalText] AS optionalText, " +
+            "       [answer IN answers | answer.createdAt] AS cdt;")
+    List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)" +
             " WHERE id(m) = $memberId and id(c)=$cid" +
             " RETURN id(q) as qid , q.text as questions")
     List<QuestionRndDto> findCategoryIdToRandomQuestion(@Param("memberId")Long memberId, @Param("cid") Long cid);
 
-    @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
-            "WHERE id(m) = $memberId RETURN id(q) as qid, q.text as questions, collect(id(a)) as answerIds,COLLECT(a.giftImg) AS giftImg,COLLECT(a.mainText) as mainText ,COLLECT(a.optionalText) as optionalText," +
-            " a.createdAt as cdt;")
-    List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question) " +
             "WHERE id(m) = $memberId " +

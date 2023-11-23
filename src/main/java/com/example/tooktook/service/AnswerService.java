@@ -109,8 +109,15 @@ public class AnswerService {
         // 0,0,1,1,0 과거
         int [] notificationGet = notification.getAnswerCounts();
 
-        // 현재(totalAnswerCounts)        과거(notificationGet)
-        //1,0,1,1,0     0,0,2,1,0
+        // 현재(totalAnswerCounts)  과거(notificationGet)
+        //1,0,1,1,0                 0,0,2,1,0
+        //T,F,F,F,F
+        //(1+1)-1
+        //(2+1)-1 // 현재값 + 1 - 1
+        // 2,0,1,1,0                2,0,2,1,0
+        // 4,1,2,3,1                3,1,3,4,0
+        // 8,3,2,4,1                4,3,2,4,1
+        // (8+1)-1                  8,3,2,4,1
         List<Boolean> result = new ArrayList<>();
 
         for (int i = 0; i <totalAnswerCounts.length ; i++) {

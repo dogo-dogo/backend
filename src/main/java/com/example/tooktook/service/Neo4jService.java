@@ -288,4 +288,11 @@ public class Neo4jService {
         log.info("---------------find ALL LIST MAIN GIFT IMG -------------");
         return questionNeo4jRepository.mySpaceGetAll(memberId);
     }
+
+    public Boolean getBoolVisit(Long memberId) {
+        Boolean visit = memberNeo4jRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getVisit();
+        return visit;
+    }
 }

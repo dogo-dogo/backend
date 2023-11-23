@@ -41,7 +41,7 @@ public class AnswerController {
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
 
 
-        return answerService.getAnswersByCategory(pageable,memberEmail);
+        return answerService.getAnswersByCategory(pageable,memberEmail.getId());
     }
     @GetMapping("/answers/notify")
     public ApiResponse<Integer> getNotificationByAnswer(@AuthenticationPrincipal MemberDetailsDto memberEmail){

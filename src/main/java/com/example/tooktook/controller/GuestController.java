@@ -5,6 +5,7 @@ import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.answerDto.AnswerDAO;
+import com.example.tooktook.model.dto.answerDto.AnswerPageDto;
 import com.example.tooktook.model.dto.answerDto.RandomAnswerDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryCountDto;
 import com.example.tooktook.model.dto.categoryDto.CategoryListDto;
@@ -21,6 +22,9 @@ import com.example.tooktook.service.S3Service;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,5 +136,22 @@ public class GuestController {
     @GetMapping("/myspace/{memberId}")
     public ApiResponse<List<mainPageDto>> mySpaceGetAll(@PathVariable Long memberId){
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,neo4jService.findAllListMain(memberId));
+    }
+    @GetMapping("/answers/{memberId}")
+    public AnswerPageDto getAnswersByCategory(
+            @PathVariable Long memberId,
+            @RequestParam(value = "sort",defaultValue = "createdAt") String sort,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        log.info("------------answerController 시작 ----------------");
+        log.info("--------------path : /api/answers/ ---------------");
+        log.info("-------------------requestParm sort: {} ", sort);
+        log.info("-------------------requestParm page: {} ", page);
+        log.info("-------------------requestParm size: {} ", size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+
+
+        return answerService.getAnswersByCategory(pageable,memberId);
     }
 }

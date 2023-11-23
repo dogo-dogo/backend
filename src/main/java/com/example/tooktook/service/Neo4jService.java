@@ -95,7 +95,9 @@ public class Neo4jService {
 
         // 만약에 Bye2023 에 7글자 제한 질답이면 제한을 둔다.
         Optional<Question> questionOptional = questionNeo4jRepository.findById(questionId);
+
         Notification notification = notificationRepository.findByNotification(memberId);
+
         List<CategoryNotify> categoryNotify = questionNeo4jRepository.findAllByCounting(memberId);
 
         int[] totalAnswerCounts = categoryNotify.stream()
@@ -277,5 +279,12 @@ public class Neo4jService {
     public List<QuestionAllDto> findAllGet(Long memberId){
         log.info("-------------service Start_--------");
         return questionNeo4jRepository.findByAllCategoryQuestions(memberId);
+    }
+
+    public Boolean getBoolVisit(Long memberId) {
+        Boolean visit = memberNeo4jRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER))
+                .getVisit();
+        return visit;
     }
 }

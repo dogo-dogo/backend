@@ -30,11 +30,9 @@ public class AnswerService {
     private final NotificationRepository notificationRepository;
 
     private final QuestionNeo4jRepository questionNeo4jRepository;
-    public AnswerPageDto getAnswersByCategory(Pageable pageable, MemberDetailsDto member) {
+    public AnswerPageDto getAnswersByCategory(Pageable pageable, Long memberId) {
         int curPage = pageable.getPageNumber()-1;
         int pageSize = pageable.getPageSize();
-
-        Long memberId = member.getId();
 
         List<AnswerPageListDto> answers = answerNeo4jRepository.findAllByCategoryFromAnswer(memberId);
 

@@ -24,7 +24,7 @@ public interface MemberNeo4jRepository extends Neo4jRepository<Member, Long> {
 //            "WHERE id(m) = $memberId RETURN id(q) as questionId, q.text as questionText, collect(id(a)) as answerIds")
 //    List<QuestionDTO> findQuestionsByMemberId(@Param("memberId") Long memberId);
 
-    @Query("MATCH (m:Member)" + "WHERE id(m)=$memberId"+"DETACH DELETE m")
+    @Query("MATCH (m:Member)-[C:CATEGORY]->(c:Category)-[A:ASKS]->(Q:Question)-[H:HASH_ANSWER]->(a:Answer)"+ "WHERE id(m)=$memberId" +"DETACH DELETE a,H,Q,A,c,C,m")
     void deleteMemberInfo(@Param("memberId") Long memberId);
 
 

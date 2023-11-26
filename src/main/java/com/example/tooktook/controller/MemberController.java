@@ -47,7 +47,7 @@ public class MemberController {
     @GetMapping("/unregister")
     public ApiResponse<?> unreigisterMember(@AuthenticationPrincipal MemberDetailsDto loginMember){
 
-
+        memberService.deleteMember(loginMember.getId());
         return ApiResponse.ok(ResponseCode.Normal.DELETE,null);
     }
 

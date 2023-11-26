@@ -26,4 +26,13 @@ public class MemberService {
         memberNeo4jRepository.save(member);
         log.info("------------memberService 종료 ----------------");
     }
+
+    @Transactional
+    public void deleteMember(Long memberId){
+        Member member = memberNeo4jRepository.findByMemberId(memberId)
+                .orElseThrow( () -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
+        memberNeo4jRepository.deleteMemberInfo(memberId);
+        memberNeo4jRepository.deleteNotification(memberId);
+
+    }
 }

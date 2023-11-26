@@ -55,7 +55,8 @@ public interface QuestionNeo4jRepository extends Neo4jRepository<Question, Long>
             "       [answer IN answers | answer.giftImg] AS giftImg, " +
             "       [answer IN answers | answer.mainText] AS mainText, " +
             "       [answer IN answers | answer.optionalText] AS optionalText, " +
-            "       [answer IN answers | answer.createdAt] AS cdt;")
+            "       [answer IN answers | answer.createdAt] AS cdt " +
+            "ORDER BY cdt DESC;")
     List<QuestionDto> findByAllAnswers(@Param("memberId") Long memberId);
 
     @Query("MATCH (m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)" +

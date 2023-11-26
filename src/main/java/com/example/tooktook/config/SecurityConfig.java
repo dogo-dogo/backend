@@ -27,7 +27,6 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PERMIT_URL_ARRAY = {
-            /* swagger v2 */
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -35,7 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/configuration/security",
             "/swagger-ui.html",
             "/webjars/**",
-            /* swagger v3 */
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/api/kakao/**",
@@ -56,13 +54,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider,kakaoService), UsernamePasswordAuthenticationFilter.class)
                     .authorizeRequests()
                     .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                    .antMatchers("/api/auth/**", "/" ,"/api/kakao/**", "/api/ques/**").permitAll()
+                    .antMatchers("/api/auth/**", "/**" ,"/api/kakao/**", "/api/ques/**").permitAll()
                     .antMatchers("/api/**").authenticated()
                     .anyRequest().authenticated()
                 .and().formLogin().disable()
                 .httpBasic().disable();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 

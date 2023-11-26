@@ -22,7 +22,7 @@ public class ResponseCode {
         NOT_FIND_QUESTION_ID(HttpStatus.BAD_REQUEST,"질문이 존재 하지 않습니다"),
 
         //답변
-        NOT_FIND_ANSWER_ID(HttpStatus.BAD_REQUEST,"답변이 존재 하지 않습니다"),
+        NOT_FIND_ANSWER_ID(HttpStatus.NOT_FOUND,"답변이 존재 하지 않습니다"),
         // 카카오API
         WRONG_ACCESS_TOKEN_AUTH(HttpStatus.FORBIDDEN,"잘못된 인증입니다."),
         EMPTY_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"토큰이 비었습니다."),
@@ -32,6 +32,9 @@ public class ResponseCode {
         JWT_EXCEPTION(HttpStatus.UNAUTHORIZED,"JWT 토큰 예외가 발생하였습니다."),
         INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러"),
         BAD_REQUEST(HttpStatus.BAD_REQUEST,"404 에러"),
+        PAGE_OVER(HttpStatus.BAD_REQUEST,"페이지가 초과 하였습니다."),
+        AWS_S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AWS S3 URL 호출 ERROR."),
+
 
         ;
 

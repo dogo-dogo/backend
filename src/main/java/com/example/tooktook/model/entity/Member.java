@@ -17,8 +17,7 @@ import java.util.List;
 @Node
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AuditOverride(forClass = BaseTimeEntity.class)
-public class Member extends BaseTimeEntity{
+public class Member{
     @Id
     @GeneratedValue
     private Long memberId;
@@ -27,14 +26,9 @@ public class Member extends BaseTimeEntity{
     @Column(columnDefinition = "NVARCHAR(30) NOT NULL")
 
     private String nickname;
-    @Column(columnDefinition = "NVARCHAR(10)")
-    private String gender;
-    @Column(columnDefinition = "NVARCHAR(20)")
-    private String color;
 
-
-    @Column(columnDefinition = "NVARCHAR(255)")
-    private String decorate;
+    @Column(columnDefinition = "TEXT")
+    private String doorImg;
 
     @Column(columnDefinition = "SMALLINT")
     private Boolean visit;
@@ -42,13 +36,18 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    public void setDoorImg(String doorImg) {
+        this.doorImg = doorImg;
+    }
+
     @Builder
-    public Member (String loginEmail, String nickname, String gender,Boolean visit, MemberRole role){
+    public Member (String loginEmail, String nickname,
+                   Boolean visit, MemberRole role,String color,String decorate,String doorImg ){
         this.loginEmail = loginEmail;
         this.nickname = nickname;
-        this.gender = gender;
         this.visit = visit;
         this.role = role;
+        this.doorImg = doorImg;
     }
 
     public void changeVisit(){
@@ -61,9 +60,15 @@ public class Member extends BaseTimeEntity{
     @Relationship(type = "CATEGORY")
     private List<Category> categories = new ArrayList<>();
 
+    @Relationship(type = "NOTIFICATION")
+    private List<Notification> notifications = new ArrayList<>();
+
 
     public void addCategory(Category category) {
         categories.add(category);
+    }
+    public void addNotification(Notification notification){
+        notifications.add(notification);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.tooktook.component.jwt;
 
 import com.example.tooktook.common.response.ResponseCode;
-import com.example.tooktook.exception.ErrorCode;
 import com.example.tooktook.exception.GlobalException;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.service.KakaoService;
@@ -17,8 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +25,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final KakaoService kakaoService;
 
     private static final String[] PERMIT_URL_ARRAY = {
+            "/api/auth/kakao",
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -37,7 +35,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/swagger-ui",
             "/webjars/**",
             "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/api/guest/answers/details/",
+            "/api/guest/default/",
+            "/api/guest/find/category/",
+            "/api/guest/find/question/",
+            "/api/guest/guest_rnd/",
+            "/api/guest/other/guest_question/",
+            "/api/ques/answers/",
+            "/api/s3/send-gift-details",
+            "/api/s3/save-gift-img",
+            "/api/guest/save-gift-img/",
+            "/api/guest/all/find/",
+            "/api/guest/myspace/",
+            "/api/guest/answers/",
     };
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -55,7 +66,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         try {
             final String header = request.getHeader(AUTHORIZATION_HEADER);
             if (header == null || !header.startsWith("Bearer ")) {

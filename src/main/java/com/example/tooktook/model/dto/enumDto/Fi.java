@@ -7,7 +7,7 @@ public enum Fi {
     QUESTION_4("만약에 12월 31일에 %s님과 있는다면 어디로 가고 싶어?"),
     QUESTION_5("%s님에게 연말 상을 수여 한다면 어떤 상을 주고 싶어?"),
     QUESTION_6("MBTI 맞춰봐"),
-    QUESTION_7("%님 첫인상 어땠어?"),
+    QUESTION_7("%s님 첫인상 어땠어?"),
     ;
     private final String text;
 

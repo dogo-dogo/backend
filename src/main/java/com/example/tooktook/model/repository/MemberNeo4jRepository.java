@@ -24,20 +24,19 @@ public interface MemberNeo4jRepository extends Neo4jRepository<Member, Long> {
 //            "WHERE id(m) = $memberId RETURN id(q) as questionId, q.text as questionText, collect(id(a)) as answerIds")
 //    List<QuestionDTO> findQuestionsByMemberId(@Param("memberId") Long memberId);
 
-    @Query("MATCH (m:Member)-[C:CATEGORY]->(c:Category)-[A:ASKS]->(Q:Question)" +
-            "WHERE ID(m) = $memberId" +
-            "OPTIONAL MATCH (Q)-[H:HAS_ANSWER]->(a:Answer)" +
-            "WITH m, C, c, A, Q, H, a" +
-            "FOREACH (ignoreMe IN CASE WHEN H IS NOT NULL AND a IS NOT NULL THEN [1] ELSE [] END |" +
-            "    DELETE H, a, Q, A, c, C" +
-            ")" +
-            "FOREACH (ignoreMe IN CASE WHEN H IS NULL AND a IS NULL THEN [1] ELSE [] END |" +
-            "    DELETE Q, A, c, C" +
+    @Query("MATCH (m:Member)-[C:CATEGORY]->(c:Category)-[A:ASKS]->(Q:Question) " +
+            "WHERE ID(m) = $memberId " +
+            "OPTIONAL MATCH (Q)-[H:HAS_ANSWER]->(a:Answer) " +
+            "WITH m, C, c, A, Q, H, a " +
+            "FOREACH (ignoreMe IN CASE WHEN H IS NOT NULL AND a IS NOT NULL THEN [1] ELSE [] END | "
+            +"DELETE H, a, Q, A, c, C "+
             ") " +
-            "DELETE m, C, c, A, Q")
+            "FOREACH (ignoreMe IN CASE WHEN H IS NULL AND a IS NULL THEN [1] ELSE [] END | " +
+            "DELETE Q, A, c, C " +
+            ") ")
     void deleteMemberInfo(@Param("memberId") Long memberId);
 
-    @Query("MATCH (m:Member)-[N:NOTIFICATION]->(n:Notification)" + "WHERE id(m)=$memberId" + "DETACH DELETE m,N,n")
+    @Query("MATCH (m:Member)-[N:NOTIFICATION]->(n:Notification) " + "WHERE id(m)=$memberId " + "DETACH DELETE m,N,n ")
     void deleteNotification(@Param("memberId") Long memberId);
 
 

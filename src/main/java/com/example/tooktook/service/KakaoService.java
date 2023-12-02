@@ -48,10 +48,20 @@ public class KakaoService {
         String strEmail = "";
         log.error("findOrCreateMember :: " + oAuthInfoResponse.getEmail());
 
-        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
-            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
+        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){ // 선택 동의를 안한 사람
+
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName()); // 새로운 이메일(닉네임) 발급
+
             strEmail = chgNick + "@" + "dogodogo.com";
-            return memberNeo4jRepository.findByLoginEmail(strEmail).map(Member::getLoginEmail)
+
+            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
+                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
+                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
+
+            }
+            return memberNeo4jRepository.findByLoginEmail(strEmail)
+                    .map(Member::getLoginEmail)
                     .orElseGet(() -> newMember(oAuthInfoResponse));
         }else{
             return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
@@ -66,8 +76,16 @@ public class KakaoService {
         String strEmail = "";
 
         if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
+
             String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
             strEmail = chgNick + "@" + "dogodogo.com";
+
+            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
+                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
+                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
+
+            }
         }else{
             strEmail = oAuthInfoResponse.getEmail();
         }

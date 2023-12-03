@@ -48,6 +48,7 @@ public class Neo4jService {
             for (CategoryEnum categoryEnum : CategoryEnum.values()) {
                 Category category = new Category(categoryEnum.getText());
                 member.addCategory(category);
+
                 switch (categoryEnum.getText()){
                     case "Bye 2023":
                         Arrays.stream(Bye2023.values())

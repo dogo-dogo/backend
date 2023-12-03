@@ -13,6 +13,8 @@ import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
+import com.example.tooktook.oauth.kakao.KakaoApiClient;
+import com.example.tooktook.oauth.kakao.KakaoLoginParams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +34,7 @@ public class KakaoService {
     private final MemberNeo4jRepository memberNeo4jRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
+
     public AuthTokens login(OAuthLoginParams kakaoAccessCode, HttpServletResponse response) {
 
         log.info("------------kakaoService  login 시작---------------");
@@ -40,6 +43,10 @@ public class KakaoService {
         log.info("login memberId (login)  :: " + memberEmail);
 
         return authTokensGenerator.generate(memberEmail,response);
+    }
+    public void unlink(KakaoLoginParams kakaoAccessCode) {
+        log.error("------------ 회원 탈퇴 ----------------");
+        requestOAuthInfoService.OAuthUnlink(kakaoAccessCode);
     }
 
 
@@ -54,12 +61,12 @@ public class KakaoService {
 
             strEmail = chgNick + "@" + "dogodogo.com";
 
-            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
-                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
-                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
-                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
-
-            }
+//            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
+//                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
+//                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+//                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
+//
+//            }
             return memberNeo4jRepository.findByLoginEmail(strEmail)
                     .map(Member::getLoginEmail)
                     .orElseGet(() -> newMember(oAuthInfoResponse));
@@ -80,12 +87,12 @@ public class KakaoService {
             String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
             strEmail = chgNick + "@" + "dogodogo.com";
 
-            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
-                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
-                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
-                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
-
-            }
+//            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
+//                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
+//                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+//                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
+//
+//            }
         }else{
             strEmail = oAuthInfoResponse.getEmail();
         }
@@ -114,7 +121,6 @@ public class KakaoService {
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
         return MemberDetailsDto.from(member);
     }
-
 
 
 }

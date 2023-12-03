@@ -48,6 +48,11 @@ public class AuthController {
         return ResponseEntity.ok(code);
     }
 
+//    @PostMapping("/kakao/unlink")
+//    public ApiResponse<?> kakaoUnlink(@RequestBody KakaoLoginParams kakaoAccessCode){
+//        kakaoService.unlink(kakaoAccessCode);
+//        return ApiResponse.ok(ResponseCode.Normal.DELETE,null);
+//    }
     @GetMapping("/check/visit")
     public ApiResponse<Boolean> checkVisitLogin(@AuthenticationPrincipal MemberDetailsDto member) {
 

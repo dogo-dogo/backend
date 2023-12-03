@@ -40,34 +40,6 @@ public class KakaoApiClient implements OAuthApiClient {
         return OAuthProvider.KAKAO;
     }
 
-
-//    @Override
-//    public String requestAccessToken(OAuthLoginParams params) {
-//
-//
-//        String url = authUrl + "/oauth/token";
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//
-//        MultiValueMap<String, String> body = params.makeBody();
-//        body.add("grant_type", GRANT_TYPE);
-//        body.add("client_id", clientId);
-//        body.add("client_secret",clientSecret);
-//
-//        log.info("---------------grant_type----------- : {} " , GRANT_TYPE);
-//        log.info("---------------client_id----------- : {} " , clientId);
-//        log.info("---------------client_secret----------- : {} " , clientSecret);
-//
-//        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
-//
-//        log.info("---------request : {} {}----------" , request.getBody() ,request.getHeaders());
-//        KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
-//
-//        assert response != null;
-//        log.info("-------------response : {} ----------- ",response.getAccessToken());
-//        return response.getAccessToken();
-//    }
     @Override
     public String requestAccessToken(OAuthLoginParams params) {
 
@@ -107,6 +79,23 @@ public class KakaoApiClient implements OAuthApiClient {
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
         return restTemplate.postForObject(url, request, OAuthInfoResponse.KakaoInfoResponse.class);
+    }
+
+    @Override
+    public void kakaoUnlink(String accessToken) {
+        String unlinkUrl = "https://kapi.kakao.com/v1/user/unlink";
+        WebClient webClient = WebClient.create();
+
+        String result = webClient.post()
+                .uri(unlinkUrl)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        log.info("--------- 탈퇴 한 result : " + result);
+
     }
 
 }

@@ -112,7 +112,6 @@ public class Neo4jService {
 
             // 질문과 답변을 연결
             question.askAnswer(answer);
-
             questionNeo4jRepository.save(question);
             answerNeo4jRepository.save(answer);
 

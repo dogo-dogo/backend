@@ -93,7 +93,6 @@ public class KakaoApiClient implements OAuthApiClient {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
         log.info("--------- 탈퇴 한 result : " + result);
 
     }

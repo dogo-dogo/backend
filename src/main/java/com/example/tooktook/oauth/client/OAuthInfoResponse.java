@@ -9,7 +9,7 @@ public interface OAuthInfoResponse {
     String getEmail();
 
     String getNickName();
-
+    long getId();
 
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -18,6 +18,8 @@ public interface OAuthInfoResponse {
         @JsonProperty("kakao_account")
         private KakaoAccount kakaoAccount;
 
+        @JsonProperty("id")
+        private long id;
 
         @Getter
         @JsonIgnoreProperties(ignoreUnknown = true)
@@ -48,6 +50,12 @@ public interface OAuthInfoResponse {
         public String getNickName() {
             return kakaoAccount.profile.nickname;
         }
+
+        @Override
+        public long getId() {
+            return id;
+        }
+
 
     }
 }

@@ -44,11 +44,15 @@ public class KakaoService {
 
         return authTokensGenerator.generate(memberEmail,response);
     }
+    @Transactional
     public void unlink(KakaoLoginParams kakaoAccessCode) {
         log.error("------------ 회원 탈퇴 ----------------");
         requestOAuthInfoService.OAuthUnlink(kakaoAccessCode);
     }
 
+    public AuthTokens notAgreementJwt(String email, HttpServletResponse response){
+        return authTokensGenerator.generate(email,response);
+    }
 
     @Transactional
     public String findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
@@ -59,14 +63,14 @@ public class KakaoService {
 
             String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName()); // 새로운 이메일(닉네임) 발급
 
-            strEmail = chgNick + "@" + "dogodogo.com";
+            strEmail = chgNick +".=."+oAuthInfoResponse.getId() +"@" + "dogodogo.com";
 
-            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
-                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
-                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
-                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
-
-            }
+//            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
+//                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
+//                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+//                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
+//
+//            }
             return memberNeo4jRepository.findByLoginEmail(strEmail)
                     .map(Member::getLoginEmail)
                     .orElseGet(() -> newMember(oAuthInfoResponse));
@@ -84,15 +88,10 @@ public class KakaoService {
 
         if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
 
-            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
-            strEmail = chgNick + "@" + "dogodogo.com";
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName()); // 새로운 이메일(닉네임) 발급
 
-            if(memberNeo4jRepository.findByLoginEmail(strEmail).isPresent()){
-                // 선택동의도 안했는데 이미 로그인 한 유저가 존재한다면.
-                int authNum = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
-                strEmail = chgNick + "." + authNum +"@" + "dogodogo.com";
+            strEmail = chgNick +".=."+oAuthInfoResponse.getId() +"@" + "dogodogo.com";
 
-            }
         }else{
             strEmail = oAuthInfoResponse.getEmail();
         }

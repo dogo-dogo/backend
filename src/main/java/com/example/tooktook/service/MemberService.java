@@ -40,4 +40,8 @@ public class MemberService {
         memberNeo4jRepository.deleteNotification(memberId);
 
     }
+
+    public int countingMember() {
+        return memberNeo4jRepository.findByCountingMember();
+    }
 }

@@ -61,26 +61,6 @@ public class KakaoApiClient implements OAuthApiClient {
 
     }
 
-
-    @Override
-    public OAuthInfoResponse requestOauthInfo(String accessToken) {
-
-        String url = apiUrl + "/v2/user/me";
-
-        log.info("-----------requestOauthInfo -----------------");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        httpHeaders.set("Authorization", "Bearer " + accessToken);
-
-        log.info("-----------accessToken : {}  -----------------" , accessToken);
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.gender\", \"kakao_account.profile\"]");
-
-        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
-
-        return restTemplate.postForObject(url, request, OAuthInfoResponse.KakaoInfoResponse.class);
-    }
-
     @Override
     public void kakaoUnlink(String accessToken) {
         String unlinkUrl = "https://kapi.kakao.com/v1/user/unlink";
@@ -96,5 +76,52 @@ public class KakaoApiClient implements OAuthApiClient {
         log.info("--------- 탈퇴 한 result : " + result);
 
     }
+//    @Override
+//    public OAuthInfoResponse requestOauthInfo(String accessToken) {
+//
+//        String url = apiUrl + "/v2/user/me";
+//
+//        log.info("-----------requestOauthInfo -----------------");
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//        httpHeaders.set("Authorization", "Bearer " + accessToken);
+//
+//        log.info("-----------accessToken : {}  -----------------" , accessToken);
+//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+//        body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.gender\", \"kakao_account.profile\"]");
+//
+//        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
+//
+//        return restTemplate.postForObject(url, request, OAuthInfoResponse.KakaoInfoResponse.class);
+//    }
+    @Override
+    public OAuthInfoResponse requestOauthInfo(String accessToken) {
+        String url = apiUrl + "/v2/user/me";
+
+        log.info("-----------requestOauthInfo -----------------");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        httpHeaders.set("Authorization", "Bearer " + accessToken);
+
+        log.info("-----------accessToken : {}  -----------------", accessToken);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.gender\", \"kakao_account.profile\"]");
+
+        HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
+
+        OAuthInfoResponse.KakaoInfoResponse responseBody =
+                restTemplate.postForObject(url, request, OAuthInfoResponse.KakaoInfoResponse.class);
+
+        if (responseBody != null) {
+            long userId = responseBody.getId(); // 사용자 ID 추출
+            log.info("User ID: {}", userId);
+            return responseBody;
+        } else {
+            log.error("Error: Failed to retrieve user information");
+            return null;
+        }
+    }
+
+
 
 }

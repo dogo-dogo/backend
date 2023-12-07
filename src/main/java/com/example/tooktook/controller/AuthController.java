@@ -66,4 +66,9 @@ public class AuthController {
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE, visit);
     }
 
+    @PostMapping("/get/csToken")
+    public ApiResponse<AuthTokens> getCsToken(@RequestBody String notAgreementEmail , HttpServletResponse response){
+        AuthTokens authRetryToken =kakaoService.notAgreementJwt(notAgreementEmail,response);
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,authRetryToken);
+    }
 }

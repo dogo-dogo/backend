@@ -14,6 +14,9 @@ public interface MemberNeo4jRepository extends Neo4jRepository<Member, Long> {
     Optional<Member> findByLoginEmail(String email);
     Optional<Member> findByMemberId(Long memberId);
 
+    @Query("MATCH(m:Member) return count(m);")
+    int findByCountingMember();
+
     @Query("MATCH (m:Member)-[C:CATEGORY]->(c:Category)-[A:ASKS]->(Q:Question) " +
             "WHERE ID(m) = $memberId " +
             "OPTIONAL MATCH (Q)-[H:HAS_ANSWER]->(a:Answer) " +

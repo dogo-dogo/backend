@@ -54,4 +54,9 @@ public class MemberController {
         kakaoService.unlink(kakaoAccessCode);
         return ApiResponse.ok(ResponseCode.Normal.DELETE,null);
     }
+
+    @GetMapping("/counting")
+    public int getCountMember(){
+        return memberService.countingMember();
+    }
 }

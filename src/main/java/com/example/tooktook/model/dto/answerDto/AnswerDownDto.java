@@ -6,7 +6,7 @@ import java.util.List;
 
 @Getter
 public class AnswerDownDto {
-    private List<String> queText;
+    private List<String> quesText;
     private String categoryText;
     private String giftImg;
     private String mainText;

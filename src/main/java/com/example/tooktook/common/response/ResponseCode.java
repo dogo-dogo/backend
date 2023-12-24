@@ -31,6 +31,7 @@ public class ResponseCode {
         EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"토큰이 만료되었습니다."),
         JWT_EXCEPTION(HttpStatus.UNAUTHORIZED,"JWT 토큰 예외가 발생하였습니다."),
         INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러"),
+        NOT_FIND_ANSWERS(HttpStatus.NO_CONTENT,"답변이 존재하지 않습니다."),
         BAD_REQUEST(HttpStatus.BAD_REQUEST,"404 에러"),
         PAGE_OVER(HttpStatus.BAD_REQUEST,"페이지가 초과 하였습니다."),
         AWS_S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"AWS S3 URL 호출 ERROR."),

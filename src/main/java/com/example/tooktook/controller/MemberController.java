@@ -3,6 +3,7 @@ package com.example.tooktook.controller;
 import com.example.tooktook.common.response.ApiResponse;
 import com.example.tooktook.common.response.ResponseCode;
 import com.example.tooktook.common.response.ValidMember;
+import com.example.tooktook.model.dto.answerDto.AnswerDownDto;
 import com.example.tooktook.model.dto.memberDto.MemberDetailsDto;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.oauth.kakao.KakaoLoginParams;
@@ -59,4 +60,11 @@ public class MemberController {
     public int getCountMember(){
         return memberService.countingMember();
     }
+
+    @GetMapping("/downloads")
+    public  ApiResponse<?> downloadContents(@AuthenticationPrincipal MemberDetailsDto loginMember){
+        AnswerDownDto answerDownDto = memberService.downloadsContents(loginMember);
+        return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerDownDto);
+    }
+
 }

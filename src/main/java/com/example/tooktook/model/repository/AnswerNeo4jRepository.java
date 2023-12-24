@@ -37,5 +37,5 @@ public interface AnswerNeo4jRepository extends Neo4jRepository<Answer, Long> {
     @Query("MATCH(m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
             "where id(m) = $memberId " +
             "return q.text as queText, c.text as categoryText ,a.giftImg as giftImg, a.mainText as mainText, a.optionalText as optText;")
-    AnswerDownDto AnswerDownLoads(@Param("memberId") Long memberId);
+    List<AnswerDownDto> AnswerDownLoads(@Param("memberId") Long memberId);
 }

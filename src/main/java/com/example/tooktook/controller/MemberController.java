@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,7 +64,7 @@ public class MemberController {
 
     @GetMapping("/downloads")
     public  ApiResponse<?> downloadContents(@AuthenticationPrincipal MemberDetailsDto loginMember){
-        AnswerDownDto answerDownDto = memberService.downloadsContents(loginMember);
+        List<AnswerDownDto> answerDownDto = memberService.downloadsContents(loginMember);
         return ApiResponse.ok(ResponseCode.Normal.RETRIEVE,answerDownDto);
     }
 

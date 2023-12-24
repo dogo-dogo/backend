@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -49,7 +51,7 @@ public class MemberService {
         return memberNeo4jRepository.findByCountingMember();
     }
 
-    public AnswerDownDto downloadsContents(MemberDetailsDto loginMember) {
+    public List<AnswerDownDto> downloadsContents(MemberDetailsDto loginMember) {
         Long memberId = loginMember.getId();
 
         if(!memberNeo4jRepository.findByMemberId(memberId).isPresent()){

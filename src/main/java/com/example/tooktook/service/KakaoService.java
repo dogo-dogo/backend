@@ -13,6 +13,8 @@ import com.example.tooktook.model.entity.Member;
 import com.example.tooktook.model.repository.MemberNeo4jRepository;
 import com.example.tooktook.oauth.client.OAuthInfoResponse;
 import com.example.tooktook.oauth.client.OAuthLoginParams;
+import com.example.tooktook.oauth.kakao.KakaoApiClient;
+import com.example.tooktook.oauth.kakao.KakaoLoginParams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +34,7 @@ public class KakaoService {
     private final MemberNeo4jRepository memberNeo4jRepository;
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
+
     public AuthTokens login(OAuthLoginParams kakaoAccessCode, HttpServletResponse response) {
 
         log.info("------------kakaoService  login 시작---------------");
@@ -41,18 +44,39 @@ public class KakaoService {
 
         return authTokensGenerator.generate(memberEmail,response);
     }
+    @Transactional
+    public void unlink(KakaoLoginParams kakaoAccessCode) {
+        log.error("------------ 회원 탈퇴 ----------------");
+        requestOAuthInfoService.OAuthUnlink(kakaoAccessCode);
+    }
 
+    public AuthTokens notAgreementJwt(String email, HttpServletResponse response){
+        return authTokensGenerator.generate(email,response);
+    }
 
     @Transactional
     public String findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
         String strEmail = "";
+        String patchEmailBF = "";
         log.error("findOrCreateMember :: " + oAuthInfoResponse.getEmail());
 
-        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
-            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
-            strEmail = chgNick + "@" + "dogodogo.com";
-            return memberNeo4jRepository.findByLoginEmail(strEmail).map(Member::getLoginEmail)
-                    .orElseGet(() -> newMember(oAuthInfoResponse));
+        if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){ // 선택 동의를 안한 사람
+
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName()); // 새로운 이메일(닉네임) 발급
+
+            patchEmailBF = chgNick + "@" +"dogodogo.com";
+            strEmail = chgNick +".=."+oAuthInfoResponse.getId() +"@" + "dogodogo.com";
+
+            if(memberNeo4jRepository.findByLoginEmail(patchEmailBF).isPresent()){
+                return memberNeo4jRepository.findByLoginEmail(patchEmailBF)
+                        .map(Member::getLoginEmail)
+                        .orElseGet(() -> newMember(oAuthInfoResponse));
+            }
+            else {
+                return memberNeo4jRepository.findByLoginEmail(strEmail)
+                        .map(Member::getLoginEmail)
+                        .orElseGet(() -> newMember(oAuthInfoResponse));
+            }
         }else{
             return memberNeo4jRepository.findByLoginEmail(oAuthInfoResponse.getEmail())
                     .map(Member::getLoginEmail)
@@ -66,8 +90,11 @@ public class KakaoService {
         String strEmail = "";
 
         if(oAuthInfoResponse.getEmail() == null || oAuthInfoResponse.getEmail().isEmpty()){
-            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName());
-            strEmail = chgNick + "@" + "dogodogo.com";
+
+            String chgNick = ValidMember.getBase64EncodeString(oAuthInfoResponse.getNickName()); // 새로운 이메일(닉네임) 발급
+
+            strEmail = chgNick +".=."+oAuthInfoResponse.getId() +"@" + "dogodogo.com";
+
         }else{
             strEmail = oAuthInfoResponse.getEmail();
         }
@@ -96,7 +123,6 @@ public class KakaoService {
                 .orElseThrow(() -> new GlobalException(ResponseCode.ErrorCode.NOT_FIND_MEMBER));
         return MemberDetailsDto.from(member);
     }
-
 
 
 }

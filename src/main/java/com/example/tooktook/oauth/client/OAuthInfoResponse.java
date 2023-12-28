@@ -9,13 +9,7 @@ public interface OAuthInfoResponse {
     String getEmail();
 
     String getNickName();
-
-    String getGender();
-
-    String getImg();
-
-    OAuthProvider getOAuthProvider();
-
+    long getId();
 
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,6 +18,8 @@ public interface OAuthInfoResponse {
         @JsonProperty("kakao_account")
         private KakaoAccount kakaoAccount;
 
+        @JsonProperty("id")
+        private long id;
 
         @Getter
         @JsonIgnoreProperties(ignoreUnknown = true)
@@ -55,22 +51,11 @@ public interface OAuthInfoResponse {
             return kakaoAccount.profile.nickname;
         }
 
-
         @Override
-        public String getGender() {
-            return kakaoAccount.gender;
+        public long getId() {
+            return id;
         }
 
 
-        @Override
-        public String getImg() {
-            return kakaoAccount.profile.profile_image_url;
-        }
-
-
-        @Override
-        public OAuthProvider getOAuthProvider() {
-            return OAuthProvider.KAKAO;
-        }
     }
 }

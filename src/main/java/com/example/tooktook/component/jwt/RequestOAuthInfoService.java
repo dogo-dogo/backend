@@ -45,4 +45,11 @@ public class RequestOAuthInfoService {
 //        OAuthApiClient client = clients.get(accessCode.oAuthProvider());
 //        return client.requestAccessToken(accessCode);
 //    }
+
+    public void OAuthUnlink(OAuthLoginParams kakaoAccessCode){
+        log.info("---------------- kakaoAccessCode {}  -----------------", kakaoAccessCode);
+        OAuthApiClient client = clients.get(kakaoAccessCode.oAuthProvider());
+        String accessToken = client.requestAccessToken(kakaoAccessCode);
+        client.kakaoUnlink(accessToken);
+    }
 }

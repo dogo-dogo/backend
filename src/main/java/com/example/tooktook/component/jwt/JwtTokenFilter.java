@@ -49,6 +49,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/api/guest/all/find/",
             "/api/guest/myspace/",
             "/api/guest/answers/",
+            "/api/get/csToken",
     };
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

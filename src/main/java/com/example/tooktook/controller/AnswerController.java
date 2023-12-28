@@ -32,7 +32,6 @@ public class AnswerController {
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
         ValidMember.validCheckNull(memberEmail);
-
         log.info("------------answerController 시작 ----------------");
         log.info("--------------path : /api/answers/ ---------------");
         log.info("-------------------requestParm sort: {} ", sort);

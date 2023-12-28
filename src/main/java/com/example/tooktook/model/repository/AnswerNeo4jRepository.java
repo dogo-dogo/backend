@@ -1,6 +1,7 @@
 package com.example.tooktook.model.repository;
 
 import com.example.tooktook.model.dto.answerDto.AnswerDAO;
+import com.example.tooktook.model.dto.answerDto.AnswerDownDto;
 import com.example.tooktook.model.dto.answerDto.AnswerPageListDto;
 import com.example.tooktook.model.entity.Answer;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -29,4 +30,12 @@ public interface AnswerNeo4jRepository extends Neo4jRepository<Answer, Long> {
             "WHERE id(m) = $memberId and id(a) = $answerId " +
             "RETURN id(a) as aid, a.giftImg as giftImg , a.mainText as mainText , a.optionalText as optionalText")
     AnswerDAO findByAnswersDetails(@Param("memberId") Long memberId, @Param("answerId") Long answerId);
+
+    @Query("MATCH(m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) where id(m) = $memberId return count(a);")
+    int findByAnswerCount(@Param("memberId") Long memberId);
+
+    @Query("MATCH(m:Member)-[:CATEGORY]->(c:Category)-[:ASKS]->(q:Question)-[:HAS_ANSWER]->(a:Answer) " +
+            "where id(m) = $memberId " +
+            "return q.text as quesText, c.text as categoryText ,a.giftImg as giftImg, a.mainText as mainText, a.optionalText as optText;")
+    List<AnswerDownDto> AnswerDownLoads(@Param("memberId") Long memberId);
 }

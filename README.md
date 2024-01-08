@@ -103,6 +103,7 @@ https://alive-stick-1e6.notion.site/bc2128ec0c0041879b6ccd24973be575
 
 </div>
 ---
+
 ## 🧐 백엔드 아키텍쳐
 
 ![image](https://github.com/FootStepteam/footstep_BE/assets/80689135/d19f9a5b-e19a-4755-b68b-0b094d182529)

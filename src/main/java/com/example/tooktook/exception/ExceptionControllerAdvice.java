@@ -25,10 +25,10 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<?> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
-        StringBuilder errMessage = new StringBuilder();
+        StringBuilder em = new StringBuilder();
         log.error("Error occurs {}", e.toString());
         for (FieldError error : result.getFieldErrors()) {
-            errMessage.append("[")
+            em.append("[")
                     .append(error.getField())
                     .append("] ")
                     .append(":")
